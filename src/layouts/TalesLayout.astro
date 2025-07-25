@@ -16,14 +16,25 @@ const { title } = Astro.props;
   </head>
   <body class="tales-page">
     <header>
-      <h1>DevTales</h1>
-      <nav>
-        <a href="/">Home</a>
-        <a href="/posts">Posts</a>
-        <a href="/tales">Tales</a>
-        <a href="/tags">Tags</a>
-        <a href="/about">About</a>
-      </nav>
+      <div class="header-content">
+        <h1>DevTales</h1>
+        
+        <!-- Botón hamburguesa -->
+        <button class="menu-toggle" aria-label="Toggle menu" aria-expanded="false">
+          <span class="hamburger-line"></span>
+          <span class="hamburger-line"></span>
+          <span class="hamburger-line"></span>
+        </button>
+        
+        <!-- Navegación -->
+        <nav class="nav-menu">
+          <a href="/">Home</a>
+          <a href="/posts">Posts</a>
+          <a href="/tales">Tales</a>
+          <a href="/tags">Tags</a>
+          <a href="/about">About</a>
+        </nav>
+      </div>
     </header>
 
     <main>
@@ -33,5 +44,45 @@ const { title } = Astro.props;
     <footer>
       &copy; 2025 Leonardo Camacho – Tales for devs.
     </footer>
+
+    <script>
+      // JavaScript para el menú hamburguesa
+      document.addEventListener('DOMContentLoaded', () => {
+        const menuToggle = document.querySelector('.menu-toggle');
+        const navMenu = document.querySelector('.nav-menu');
+        const body = document.body;
+        
+        if (menuToggle && navMenu) {
+          menuToggle.addEventListener('click', () => {
+            const isExpanded = menuToggle.getAttribute('aria-expanded') === 'true';
+            
+            menuToggle.setAttribute('aria-expanded', String(!isExpanded));
+            menuToggle.classList.toggle('active');
+            navMenu.classList.toggle('active');
+            body.classList.toggle('menu-open');
+          });
+
+          // Cerrar menú cuando se hace clic en un enlace
+          navMenu.querySelectorAll('a').forEach(link => {
+            link.addEventListener('click', () => {
+              menuToggle.setAttribute('aria-expanded', 'false');
+              menuToggle.classList.remove('active');
+              navMenu.classList.remove('active');
+              body.classList.remove('menu-open');
+            });
+          });
+
+          // Cerrar menú al redimensionar la ventana si es desktop
+          window.addEventListener('resize', () => {
+            if (window.innerWidth > 768) {
+              menuToggle.setAttribute('aria-expanded', 'false');
+              menuToggle.classList.remove('active');
+              navMenu.classList.remove('active');
+              body.classList.remove('menu-open');
+            }
+          });
+        }
+      });
+    </script>
   </body>
 </html>
