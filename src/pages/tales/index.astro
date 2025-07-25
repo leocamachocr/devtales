@@ -1,0 +1,46 @@
+---
+import { getCollection } from 'astro:content';
+import TalesLayout from '../../layouts/TalesLayout.astro';
+
+const tales = await getCollection('tales');
+---
+
+<TalesLayout title="Tales - Leonardo Camacho">
+  <section class="tales-section">
+    <h1>Tales</h1>
+    <p>Stories that teach programming principles through real-world experiences</p>
+    
+    <div class="tales-grid">
+      {tales.map(tale => (
+        <article class="tale-card">
+          {tale.data.image && (
+            <div class="tale-thumbnail">
+              <img 
+                src={tale.data.image} 
+                alt={tale.data.imageAlt || tale.data.title}
+                loading="lazy"
+              />
+            </div>
+          )}
+          <div class="tale-content">
+            <h2>
+              <a href={`/tales/${tale.slug}/`}>{tale.data.title}</a>
+            </h2>
+            <p class="tale-meta">
+              <time>{tale.data.date.toDateString()}</time>
+              {tale.data.author && <span> • by {tale.data.author}</span>}
+            </p>
+            <p class="tale-description">{tale.data.description}</p>
+            {tale.data.tags && tale.data.tags.length > 0 && (
+              <div class="tale-tags">
+                {tale.data.tags.slice(0, 3).map((tag) => (
+                  <span class="tag">#{tag}</span>
+                ))}
+              </div>
+            )}
+          </div>
+        </article>
+      ))}
+    </div>
+  </section>
+</TalesLayout>

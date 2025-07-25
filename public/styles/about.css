@@ -1,0 +1,11 @@
+/* Estilos específicos para la página About */
+.about-page {
+  background: linear-gradient(135deg, var(--color-accent), var(--color-highlight));
+}
+
+.about-special-section {
+  padding: 3rem;
+  border-radius: var(--radius);
+  background: rgba(255, 255, 255, 0.9);
+  margin: 2rem 0;
+}

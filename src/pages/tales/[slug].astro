@@ -1,0 +1,44 @@
+---
+import { getCollection } from 'astro:content';
+import TalesLayout from '../../layouts/TalesLayout.astro';
+
+export async function getStaticPaths() {
+  const tales = await getCollection('tales');
+  return tales.map((tale) => ({
+    params: { slug: tale.slug },
+    props: { tale },
+  }));
+}
+
+const { tale } = Astro.props;
+const { Content } = await tale.render();
+---
+
+<TalesLayout title={tale.data.title}>
+  {tale.data.image && (
+    <div class="hero-image">
+      <img 
+        src={tale.data.image} 
+        alt={tale.data.imageAlt || tale.data.title}
+        loading="lazy"
+      />
+    </div>
+  )}
+  <article class="card">
+    <h1>{tale.data.title}</h1>
+    <p><small>{tale.data.date.toDateString()}</small></p>
+    <p><em>by {tale.data.author}</em></p>
+    <p><em>{tale.data.description}</em></p>
+    
+    {tale.data.tags && tale.data.tags.length > 0 && (
+      <div class="tags">
+        {tale.data.tags.map((tag) => (
+          <a href={`/tags#${tag}`} class="tag">#{tag}</a>
+        ))}
+      </div>
+    )}
+    
+    <br/>
+    <Content />
+  </article>
+</TalesLayout>

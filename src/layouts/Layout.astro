@@ -1,0 +1,35 @@
+---
+const { title = "Leonardo Camacho" } = Astro.props;
+---
+
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>{title}</title>
+    <!-- Estilos base comunes -->
+    <link rel="stylesheet" href="/styles/base.css" />
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet" />
+  </head>
+  <body>
+    <header>
+      <h1>DevTales</h1>
+      <nav>
+        <a href="/">Home</a>
+        <a href="/articles">Articles</a>
+        <a href="/tales">Tales</a>
+        <a href="/tags">Tags</a>
+        <a href="/about">About</a>
+      </nav>
+    </header>
+
+    <main>
+      <slot />
+    </main>
+
+    <footer>
+      &copy; 2025 Leonardo Camacho – Tales for devs.
+    </footer>
+  </body>
+</html>

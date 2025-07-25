@@ -1,0 +1,44 @@
+---
+import { getCollection } from 'astro:content';
+import ArticlesLayout from '../../layouts/ArticlesLayout.astro';
+
+export async function getStaticPaths() {
+  const articles = await getCollection('articles');
+  return articles.map((article) => ({
+    params: { slug: article.slug },
+    props: { article },
+  }));
+}
+
+const { article } = Astro.props;
+const { Content } = await article.render();
+---
+
+<ArticlesLayout title={article.data.title}>
+  <article class="card">
+    {article.data.image && (
+      <div class="hero-image">
+        <img 
+          src={article.data.image} 
+          alt={article.data.imageAlt || article.data.title}
+          loading="lazy"
+        />
+      </div>
+    )}
+    <h1>{article.data.title}</h1>
+    <p><small>{article.data.date.toDateString()}</small></p>
+    <p><em>by {article.data.author}</em></p>
+    <p><em>{article.data.description}</em></p>
+    
+    {article.data.tags && article.data.tags.length > 0 && (
+      <div class="tags">
+        {article.data.tags.map((tag) => (
+          <a href={`/tags#${tag}`} class="tag">#{tag}</a>
+        ))}
+      </div>
+    )}
+    
+    <br/>
+    <Content />
+  </article>
+</ArticlesLayout>

@@ -1,0 +1,124 @@
+---
+import { getCollection } from 'astro:content';
+import Layout from '../../layouts/Layout.astro';
+
+const tales = await getCollection('tales');
+
+// Obtener todos los tags únicos
+const allTags = [...new Set(tales.flatMap(tale => tale.data.tags || []))];
+
+// Agrupar tales por tag
+const talesByTag: Record<string, typeof tales> = {};
+allTags.forEach((tag: string) => {
+  talesByTag[tag] = tales.filter(tale => tale.data.tags?.includes(tag));
+});
+---
+
+<Layout title="Tags - DevTales">
+  <section>
+    <h1>Exploring Tags</h1>
+    <p>Discover content organized by themes and concepts.</p>
+
+    <div class="tags-overview">
+      {allTags.map((tag: string) => (
+        <a href={`#${tag}`} class="tag">
+          #{tag}
+          <span class="tag-count">({talesByTag[tag].length})</span>
+        </a>
+      ))}
+    </div>
+
+    {allTags.map((tag: string) => (
+      <div class="tag-section" id={tag}>
+        <h2>#{tag}</h2>
+        <div class="tales-grid">
+          {talesByTag[tag].map(tale => (
+            <article class="tale-preview">
+              <h3><a href={`/tales/${tale.slug}`}>{tale.data.title}</a></h3>
+              <p class="tale-meta">
+                <small>{tale.data.date.toDateString()}</small> · 
+                <em>{tale.data.author}</em>
+              </p>
+              <p>{tale.data.description}</p>
+            </article>
+          ))}
+        </div>
+      </div>
+    ))}
+  </section>
+</Layout>
+
+<style>
+  .tags-overview {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    margin: 2rem 0;
+    padding: 2rem;
+    background: var(--color-card-bg);
+    border-radius: var(--radius);
+    border: 1px solid var(--color-border);
+  }
+
+  .tag-link {
+    background: var(--color-accent);
+    color: white;
+    padding: 0.5rem 1rem;
+    border-radius: 25px;
+    text-decoration: none;
+    font-weight: 600;
+    transition: all 0.3s ease;
+  }
+
+  .tag-link:hover {
+    background: var(--color-highlight);
+    transform: translateY(-2px);
+    color: white;
+    border: none;
+  }
+
+  .tag-count {
+    background: rgba(255, 255, 255, 0.2);
+    padding: 0.2rem 0.5rem;
+    border-radius: 15px;
+    font-size: 0.8rem;
+    margin-left: 0.5rem;
+  }
+
+  .tag-section {
+    margin: 3rem 0;
+  }
+
+  .tales-grid {
+    display: grid;
+    gap: 1.5rem;
+    margin-top: 1rem;
+  }
+
+  .tale-preview {
+    background: var(--color-card-bg);
+    padding: 1.5rem;
+    border-radius: var(--radius);
+    border: 1px solid var(--color-border);
+    box-shadow: var(--shadow-light);
+  }
+
+  .tale-preview h3 {
+    margin: 0 0 0.5rem 0;
+    font-size: 1.3rem;
+  }
+
+  .tale-preview h3 a {
+    color: var(--color-text);
+    text-decoration: none;
+  }
+
+  .tale-preview h3 a:hover {
+    color: var(--color-accent);
+  }
+
+  .tale-meta {
+    color: var(--color-muted);
+    margin: 0.5rem 0;
+  }
+</style>
