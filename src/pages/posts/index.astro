@@ -1,0 +1,46 @@
+---
+import { getCollection } from 'astro:content';
+import PostsLayout from '../../layouts/PostsLayout.astro';
+
+const posts = await getCollection('posts');
+---
+
+<PostsLayout title="Articles - Leonardo Camacho">
+  <section class="posts-section">
+    <h1>Posts</h1>
+    <p>Stories that teach programming principles through real-world experiences</p>
+    
+    <div class="posts-grid">
+      {posts.map(post => (
+        <post class="post-card">
+          {post.data.image && (
+            <div class="post-thumbnail">
+              <img 
+                src={post.data.image} 
+                alt={post.data.imageAlt || post.data.title}
+                loading="lazy"
+              />
+            </div>
+          )}
+          <div class="post-content">
+            <h2>
+              <a href={`/posts/${post.slug}/`}>{post.data.title}</a>
+            </h2>
+            <p class="post-meta">
+              <time>{post.data.date.toDateString()}</time>
+              {post.data.author && <span> • by {post.data.author}</span>}
+            </p>
+            <p class="post-description">{post.data.description}</p>
+            {post.data.tags && post.data.tags.length > 0 && (
+              <div class="post-tags">
+                {post.data.tags.slice(0, 3).map((tag) => (
+                  <span class="tag">#{tag}</span>
+                ))}
+              </div>
+            )}
+          </div>
+        </post>
+      ))}
+    </div>
+  </section>
+</PostsLayout>

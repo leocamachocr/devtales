@@ -1,0 +1,44 @@
+---
+import { getCollection } from 'astro:content';
+import PostsLayout from '../../layouts/PostsLayout.astro';
+
+export async function getStaticPaths() {
+  const posts = await getCollection('posts');
+  return posts.map((post) => ({
+    params: { slug: post.slug },
+    props: { post },
+  }));
+}
+
+const { post } = Astro.props;
+const { Content } = await post.render();
+---
+
+<PostsLayout title={post.data.title}>
+  <post class="card">
+    {post.data.image && (
+      <div class="hero-image">
+        <img 
+          src={post.data.image} 
+          alt={post.data.imageAlt || post.data.title}
+          loading="lazy"
+        />
+      </div>
+    )}
+    <h1>{post.data.title}</h1>
+    <p><small>{post.data.date.toDateString()}</small></p>
+    <p><em>by {post.data.author}</em></p>
+    <p><em>{post.data.description}</em></p>
+    
+    {post.data.tags && post.data.tags.length > 0 && (
+      <div class="tags">
+        {post.data.tags.map((tag) => (
+          <a href={`/tags#${tag}`} class="tag">#{tag}</a>
+        ))}
+      </div>
+    )}
+    
+    <br/>
+    <Content />
+  </post>
+</PostsLayout>

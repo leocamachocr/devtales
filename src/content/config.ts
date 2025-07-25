@@ -15,7 +15,7 @@ const talesCollection = defineCollection({
   }),
 });
 
-const articlesCollection = defineCollection({
+const postsCollection = defineCollection({
   type: "content",
   schema: z.object({
     title: z.string(),
@@ -32,5 +32,5 @@ const articlesCollection = defineCollection({
 
 export const collections = {
   tales: talesCollection,
-  articles: articlesCollection,
+  posts: postsCollection,
 };
