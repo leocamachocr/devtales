@@ -9,7 +9,7 @@ const { title = "Leonardo Camacho" } = Astro.props;
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>{title}</title>
     <!-- Estilos base comunes -->
-    <link rel="stylesheet" href="/styles/base.css" />
+    <link rel="stylesheet" href="styles/base.css" />
     <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet" />
   </head>
   <body>
@@ -26,11 +26,11 @@ const { title = "Leonardo Camacho" } = Astro.props;
         
         <!-- Navegación -->
         <nav class="nav-menu">
-          <a href="/">Home</a>
-          <a href="/posts">Posts</a>
-          <a href="/tales">Tales</a>
-          <a href="/tags">Tags</a>
-          <a href="/about">About</a>
+          <a href="/devtales/">Home</a>
+          <a href="/devtales/posts">Posts</a>
+          <a href="/devtales/tales">Tales</a>
+          <a href="/devtales/tags">Tags</a>
+          <a href="/devtales/about">About</a>
         </nav>
       </div>
     </header>
@@ -44,6 +44,6 @@ const { title = "Leonardo Camacho" } = Astro.props;
     </footer>
 
     <!-- JavaScript del menú hamburguesa con defer para mejor rendimiento -->
-    <script src="/js/hamburger-menu.js" defer></script>
+    <script src="js/hamburger-menu.js" defer></script>
   </body>
 </html>
