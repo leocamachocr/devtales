@@ -31,7 +31,9 @@ export function getContentUrl(
   tales: CollectionEntry<"tales">[]
 ): string {
   const type = getContentType(item.slug, tales);
-  return type === "tale" ? `/tales/${item.slug}/` : `/posts/${item.slug}/`;
+  return type === "tale"
+    ? `/devtales/tales/${item.slug}/`
+    : `/devtales/posts/${item.slug}/`;
 }
 
 /**

@@ -35,7 +35,7 @@ const { Content } = await item.render();
     {item.data.tags && item.data.tags.length > 0 && (
       <div class="tags">
         {item.data.tags.map((tag: string) => (
-          <a href={`/tags#${tag}`} class="tag">#{tag}</a>
+          <a href={`/devtales/tags#${tag}`} class="tag">#{tag}</a>
         ))}
       </div>
     )}

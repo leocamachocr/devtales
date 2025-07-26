@@ -37,7 +37,7 @@ const { Content } = await tale.render();
     {tale.data.tags && tale.data.tags.length > 0 && (
       <div class="tags">
         {tale.data.tags.map((tag) => (
-          <a href={`/tags#${tag}`} class="tag">#{tag}</a>
+          <a href={`/devtales/tags#${tag}`} class="tag">#{tag}</a>
         ))}
       </div>
     )}

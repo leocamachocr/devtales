@@ -34,7 +34,7 @@ allTags.forEach((tag: string) => {
         <div class="tales-grid">
           {talesByTag[tag].map(tale => (
             <article class="tale-preview">
-              <h3><a href={`/tales/${tale.slug}`}>{tale.data.title}</a></h3>
+              <h3><a href={`/devtales/tales/${tale.slug}`}>{tale.data.title}</a></h3>
               <p class="tale-meta">
                 <small>{tale.data.date.toDateString()}</small> · 
                 <em>{tale.data.author}</em>

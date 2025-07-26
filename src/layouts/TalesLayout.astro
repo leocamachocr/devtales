@@ -9,9 +9,9 @@ const { title } = Astro.props;
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>{title}</title>
     <!-- Estilos base comunes -->
-    <link rel="stylesheet" href="styles/base.css" />
+    <link rel="stylesheet" href="/devtales/styles/base.css" />
     <!-- Estilos específicos para tales -->
-    <link rel="stylesheet" href="styles/tales.css" />
+    <link rel="stylesheet" href="/devtales/styles/tales.css" />
     <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet" />
   </head>
   <body class="tales-page">
@@ -46,6 +46,6 @@ const { title } = Astro.props;
     </footer>
 
     <!-- JavaScript del menú hamburguesa con defer para mejor rendimiento -->
-    <script src="js/hamburger-menu.js" defer></script>
+    <script src="/devtales/js/hamburger-menu.js" defer></script>
 </body>
 </html>

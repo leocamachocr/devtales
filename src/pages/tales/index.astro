@@ -25,7 +25,7 @@ const tales = await getCollection('tales');
           )}
           <div class="tale-content">
             <h2>
-              <a href={`/tales/${tale.slug}/`}>{tale.data.title}</a>
+              <a href={`/devtales/tales/${tale.slug}/`}>{tale.data.title}</a>
             </h2>
             <p class="tale-meta">
               <time title={formatDate(tale.data.date)}>{formatRelativeDate(tale.data.date)}</time>

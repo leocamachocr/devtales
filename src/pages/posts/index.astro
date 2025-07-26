@@ -24,7 +24,7 @@ const posts = await getCollection('posts');
           )}
           <div class="post-content">
             <h2>
-              <a href={`/posts/${post.slug}/`}>{post.data.title}</a>
+              <a href={`/devtales/posts/${post.slug}/`}>{post.data.title}</a>
             </h2>
             <p class="post-meta">
               <time title={formatDate(post.data.date)}>{formatRelativeDate(post.data.date)}</time>
