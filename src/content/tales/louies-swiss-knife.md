@@ -5,7 +5,7 @@ language: "en"
 category: "tale"
 description: "A narrative that connects a young software engineer's multi-tool with the Single Responsibility Principle in code."
 author: "Leonardo Camacho"
-image: "/devtales/images/swiss-knife.png"
+image: "/devtales/images/swiss-knife.webp"
 imageAlt: "Swiss army knife with multiple tools extended"
 tags:
   [

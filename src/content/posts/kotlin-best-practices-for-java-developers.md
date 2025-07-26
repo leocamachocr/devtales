@@ -5,7 +5,7 @@ language: "en"
 category: "post"
 description: "A practical guide I wrote for Java developers exploring Kotlin. Originally published on Gorilla Logic's blog."
 author: "Leonardo Camacho"
-image: "/devtales/images/kotlin-best-practices.png" # <- Replace with your actual image path
+image: "/devtales/images/kotlin-best-practices.webp" # <- Replace with your actual image path
 imageAlt: "Illustration of Kotlin and Java integration"
 tags:
   [
