@@ -2,7 +2,7 @@
 title: "Louie's Swiss Knife: A Story About the Single Responsibility Principle"
 date: 2025-07-19T00:00:00.000Z
 language: "en"
-category: "stories"
+category: "tale"
 description: "A narrative that connects a young software engineer's multi-tool with the Single Responsibility Principle in code."
 author: "Leonardo Camacho"
 image: "/images/swiss-knife.png"

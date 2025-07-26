@@ -1,14 +1,14 @@
 ---
 import { getCollection } from 'astro:content';
 import PostsLayout from '../../layouts/PostsLayout.astro';
+import { formatRelativeDate, formatDate } from '../../utils/content';
 
 const posts = await getCollection('posts');
 ---
 
-<PostsLayout title="Articles - Leonardo Camacho">
+<PostsLayout title="Posts - Leonardo Camacho">
   <section class="posts-section">
     <h1>Posts</h1>
-    <p>Stories that teach programming principles through real-world experiences</p>
     
     <div class="posts-grid">
       {posts.map(post => (
@@ -27,7 +27,7 @@ const posts = await getCollection('posts');
               <a href={`/posts/${post.slug}/`}>{post.data.title}</a>
             </h2>
             <p class="post-meta">
-              <time>{post.data.date.toDateString()}</time>
+              <time title={formatDate(post.data.date)}>{formatRelativeDate(post.data.date)}</time>
               {post.data.author && <span> • by {post.data.author}</span>}
             </p>
             <p class="post-description">{post.data.description}</p>

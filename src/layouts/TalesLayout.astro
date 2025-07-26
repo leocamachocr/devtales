@@ -15,7 +15,7 @@ const { title } = Astro.props;
     <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet" />
   </head>
   <body class="tales-page">
-    <header>
+<header>
       <div class="header-content">
         <h1>DevTales</h1>
         
@@ -45,44 +45,7 @@ const { title } = Astro.props;
       &copy; 2025 Leonardo Camacho – Tales for devs.
     </footer>
 
-    <script>
-      // JavaScript para el menú hamburguesa
-      document.addEventListener('DOMContentLoaded', () => {
-        const menuToggle = document.querySelector('.menu-toggle');
-        const navMenu = document.querySelector('.nav-menu');
-        const body = document.body;
-        
-        if (menuToggle && navMenu) {
-          menuToggle.addEventListener('click', () => {
-            const isExpanded = menuToggle.getAttribute('aria-expanded') === 'true';
-            
-            menuToggle.setAttribute('aria-expanded', String(!isExpanded));
-            menuToggle.classList.toggle('active');
-            navMenu.classList.toggle('active');
-            body.classList.toggle('menu-open');
-          });
-
-          // Cerrar menú cuando se hace clic en un enlace
-          navMenu.querySelectorAll('a').forEach(link => {
-            link.addEventListener('click', () => {
-              menuToggle.setAttribute('aria-expanded', 'false');
-              menuToggle.classList.remove('active');
-              navMenu.classList.remove('active');
-              body.classList.remove('menu-open');
-            });
-          });
-
-          // Cerrar menú al redimensionar la ventana si es desktop
-          window.addEventListener('resize', () => {
-            if (window.innerWidth > 768) {
-              menuToggle.setAttribute('aria-expanded', 'false');
-              menuToggle.classList.remove('active');
-              navMenu.classList.remove('active');
-              body.classList.remove('menu-open');
-            }
-          });
-        }
-      });
-    </script>
-  </body>
+    <!-- JavaScript del menú hamburguesa con defer para mejor rendimiento -->
+    <script src="/js/hamburger-menu.js" defer></script>
+</body>
 </html>

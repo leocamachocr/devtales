@@ -3,36 +3,38 @@ import { getCollection } from 'astro:content';
 import Layout from '../../layouts/Layout.astro';
 
 export async function getStaticPaths() {
-  const articles = await getCollection('articles');
-  return articles.map((tale) => ({
-    params: { slug: tale.slug },
-    props: { tale },
+  const tales = await getCollection('tales');
+  const posts = await getCollection('posts');
+  const allContent = [...tales, ...posts];
+  return allContent.map((item) => ({
+    params: { slug: item.slug },
+    props: { item },
   }));
 }
 
-const { tale } = Astro.props;
-const { Content } = await tale.render();
+const { item } = Astro.props;
+const { Content } = await item.render();
 ---
 
-<Layout title={tale.data.title}>
+<Layout title={item.data.title}>
   <article class="card">
-    {tale.data.image && (
+    {item.data.image && (
       <div class="hero-image">
         <img 
-          src={tale.data.image} 
-          alt={tale.data.imageAlt || tale.data.title}
+          src={item.data.image} 
+          alt={item.data.imageAlt || item.data.title}
           loading="lazy"
         />
       </div>
     )}
-    <h1>{tale.data.title}</h1>
-    <p><small>{tale.data.date.toDateString()}</small></p>
-    <p><em>by {tale.data.author}</em></p>
-    <p><em>{tale.data.description}</em></p>
+    <h1>{item.data.title}</h1>
+    <p><small>{item.data.date.toDateString()}</small></p>
+    <p><em>by {item.data.author}</em></p>
+    <p><em>{item.data.description}</em></p>
     
-    {tale.data.tags && tale.data.tags.length > 0 && (
+    {item.data.tags && item.data.tags.length > 0 && (
       <div class="tags">
-        {tale.data.tags.map((tag) => (
+        {item.data.tags.map((tag: string) => (
           <a href={`/tags#${tag}`} class="tag">#{tag}</a>
         ))}
       </div>

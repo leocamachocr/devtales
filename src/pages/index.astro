@@ -1,25 +1,24 @@
 ---
 import { getCollection } from 'astro:content';
 import Layout from '../layouts/Layout.astro';
+import { 
+  combineAndSortContent, 
+  getContentType, 
+  getContentUrl, 
+  getContentStats,
+  formatDate,
+  formatRelativeDate 
+} from '../utils/content';
 
 // Get the latest tales and posts for the homepage
 const tales = await getCollection('tales');
 const posts = await getCollection('posts');
 
-// Combine and sort by date (most recent first)
-const allContent = [...tales, ...posts]
-  .sort((a, b) => new Date(b.data.date).getTime() - new Date(a.data.date).getTime())
-  .slice(0, 6); // Show latest 6 items
+// Combine and sort by date (most recent first) - show latest 6 items
+const allContent = combineAndSortContent(tales, posts, 6);
 
-// Helper function to determine content type
-function getContentType(slug: string) {
-  return tales.find(t => t.slug === slug) ? 'tale' : 'post';
-}
-
-function getContentUrl(item: any) {
-  const type = getContentType(item.slug);
-  return type === 'tale' ? `/tales/${item.slug}/` : `/posts/${item.slug}/`;
-}
+// Get content statistics (optional - for future use)
+const stats = getContentStats(tales, posts);
 ---
 
 <Layout title="Dev Tales - Leonardo Camacho">
@@ -36,9 +35,9 @@ function getContentUrl(item: any) {
     <section class="featured-content">
       {/* <h2>Latest Stories & Articles</h2> */}
       <div class="content-grid">
-        {allContent.map((item: any) => {
-          const contentType = getContentType(item.slug);
-          const url = getContentUrl(item);
+        {allContent.map((item) => {
+          const contentType = getContentType(item.slug, tales);
+          const url = getContentUrl(item, tales);
           
           return (
             <article class="content-card">
@@ -50,7 +49,7 @@ function getContentUrl(item: any) {
                     loading="lazy"
                   />
                   <div class="content-type-badge">
-                    {contentType === 'tale' ? 'Tale' : 'Post'}
+                    {contentType}
                   </div>
                 </div>
               )}
@@ -59,7 +58,7 @@ function getContentUrl(item: any) {
                   <a href={url}>{item.data.title}</a>
                 </h3>
                 <p class="card-meta">
-                  <time>{item.data.date.toDateString()}</time>
+                  <time title={formatDate(item.data.date)}>{formatRelativeDate(item.data.date)}</time>
                   <span class="separator">•</span>
                   <span class="content-category">{item.data.category}</span>
                 </p>

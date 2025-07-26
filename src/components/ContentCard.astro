@@ -1,0 +1,156 @@
+---
+import type { ContentItem } from '../utils/content';
+import { getContentType, getContentUrl } from '../utils/content';
+
+interface Props {
+  item: ContentItem;
+  tales: ContentItem[];
+}
+
+const { item, tales } = Astro.props;
+const contentType = getContentType(item.slug, tales.filter(t => t.collection === 'tales'));
+const url = getContentUrl(item, tales.filter(t => t.collection === 'tales'));
+---
+
+<article class="content-card">
+  {item.data.image && (
+    <div class="card-thumbnail">
+      <img 
+        src={item.data.image} 
+        alt={item.data.imageAlt || item.data.title}
+        loading="lazy"
+      />
+      <div class="content-type-badge">
+        {item.data.category}
+      </div>
+    </div>
+  )}
+  <div class="card-content">
+    <h3>
+      <a href={url}>{item.data.title}</a>
+    </h3>
+    <p class="card-meta">
+      <time>{item.data.date.toDateString()}</time>
+      <span class="separator">•</span>
+    </p>
+    <p class="card-description">{item.data.description}</p>
+    {item.data.tags && item.data.tags.length > 0 && (
+      <div class="card-tags">
+        {item.data.tags.slice(0, 3).map((tag: string) => (
+          <span class="tag">#{tag}</span>
+        ))}
+      </div>
+    )}
+  </div>
+</article>
+
+<style>
+  .content-card {
+    background: var(--color-card-bg);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius);
+    overflow: hidden;
+    box-shadow: var(--shadow-light);
+    transition: all 0.3s ease;
+    position: relative;
+  }
+
+  .content-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
+  }
+
+  .card-thumbnail {
+    aspect-ratio: 16/9;
+    overflow: hidden;
+    background: var(--color-border);
+    position: relative;
+  }
+
+  .card-thumbnail img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+    transition: transform 0.3s ease;
+  }
+
+  .content-card:hover .card-thumbnail img {
+    transform: scale(1.05);
+  }
+
+  .content-type-badge {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    background: rgba(0, 0, 0, 0.8);
+    color: white;
+    padding: 0.4rem 0.8rem;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    backdrop-filter: blur(4px);
+  }
+
+  .card-content {
+    padding: 1.5rem;
+  }
+
+  .card-content h3 {
+    margin: 0 0 0.5rem 0;
+    font-size: 1.3rem;
+    line-height: 1.3;
+  }
+
+  .card-content h3 a {
+    color: var(--color-text);
+    text-decoration: none;
+    transition: color 0.3s ease;
+  }
+
+  .card-content h3 a:hover {
+    color: var(--color-accent);
+  }
+
+  .card-meta {
+    color: var(--color-muted);
+    font-size: 0.9rem;
+    margin: 0 0 1rem 0;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .separator {
+    color: var(--color-border);
+  }
+
+  .card-description {
+    color: var(--color-text);
+    line-height: 1.6;
+    margin: 0 0 1rem 0;
+  }
+
+  .card-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+
+  .tag {
+    background: linear-gradient(135deg, var(--color-accent), var(--color-highlight));
+    color: white;
+    font-size: 0.75rem;
+    font-weight: 600;
+    padding: 0.3rem 0.6rem;
+    border-radius: 15px;
+  }
+
+  @media (max-width: 768px) {
+    .card-meta {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 0.3rem;
+    }
+  }
+</style>

@@ -2,7 +2,7 @@
 title: "Kotlin Best Practices for Java Developers"
 date: 2025-07-24T00:00:00.000Z
 language: "en"
-category: "articles"
+category: "post"
 description: "A practical guide I wrote for Java developers exploring Kotlin. Originally published on Gorilla Logic's blog."
 author: "Leonardo Camacho"
 image: "/images/kotlin-best-practices.png" # <- Replace with your actual image path

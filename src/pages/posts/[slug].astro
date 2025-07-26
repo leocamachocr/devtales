@@ -1,6 +1,7 @@
 ---
 import { getCollection } from 'astro:content';
 import PostsLayout from '../../layouts/PostsLayout.astro';
+import { formatDate, formatRelativeDate } from '../../utils/content';
 
 export async function getStaticPaths() {
   const posts = await getCollection('posts');
@@ -26,8 +27,11 @@ const { Content } = await post.render();
       </div>
     )}
     <h1>{post.data.title}</h1>
-    <p><small>{post.data.date.toDateString()}</small></p>
-    <p><em>by {post.data.author}</em></p>
+    <p class="article-meta">
+      <time title={formatDate(post.data.date)}>{formatRelativeDate(post.data.date)}</time>
+      <span> • </span>
+      <span>by {post.data.author}</span>
+    </p>
     <p><em>{post.data.description}</em></p>
     
     {post.data.tags && post.data.tags.length > 0 && (

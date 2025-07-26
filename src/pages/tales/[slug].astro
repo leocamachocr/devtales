@@ -1,6 +1,7 @@
 ---
 import { getCollection } from 'astro:content';
 import TalesLayout from '../../layouts/TalesLayout.astro';
+import { formatDate, formatRelativeDate } from '../../utils/content';
 
 export async function getStaticPaths() {
   const tales = await getCollection('tales');
@@ -26,8 +27,11 @@ const { Content } = await tale.render();
   )}
   <article class="card">
     <h1>{tale.data.title}</h1>
-    <p><small>{tale.data.date.toDateString()}</small></p>
-    <p><em>by {tale.data.author}</em></p>
+    <p class="article-meta">
+      <time title={formatDate(tale.data.date)}>{formatRelativeDate(tale.data.date)}</time>
+      <span> • </span>
+      <span>by {tale.data.author}</span>
+    </p>
     <p><em>{tale.data.description}</em></p>
     
     {tale.data.tags && tale.data.tags.length > 0 && (

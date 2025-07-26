@@ -1,6 +1,7 @@
 ---
 import { getCollection } from 'astro:content';
 import TalesLayout from '../../layouts/TalesLayout.astro';
+import { formatRelativeDate, formatDate } from '../../utils/content';
 
 const tales = await getCollection('tales');
 ---
@@ -27,7 +28,7 @@ const tales = await getCollection('tales');
               <a href={`/tales/${tale.slug}/`}>{tale.data.title}</a>
             </h2>
             <p class="tale-meta">
-              <time>{tale.data.date.toDateString()}</time>
+              <time title={formatDate(tale.data.date)}>{formatRelativeDate(tale.data.date)}</time>
               {tale.data.author && <span> • by {tale.data.author}</span>}
             </p>
             <p class="tale-description">{tale.data.description}</p>
