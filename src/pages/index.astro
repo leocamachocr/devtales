@@ -55,7 +55,16 @@ const stats = getContentStats(tales, posts);
               )}
               <div class="card-content">
                 <h3>
-                  <a href={url}>{item.data.title}</a>
+                  <a 
+                    href={url}
+                    onclick={`
+                      if (typeof window.devTalesAnalytics !== 'undefined') {
+                        window.devTalesAnalytics.trackContentClick('${contentType}', '${item.data.title.replace(/'/g, "\\'")}');
+                      }
+                    `}
+                  >
+                    {item.data.title}
+                  </a>
                 </h3>
                 <p class="card-meta">
                   <time title={formatDate(item.data.date)}>{formatRelativeDate(item.data.date)}</time>
@@ -66,7 +75,16 @@ const stats = getContentStats(tales, posts);
                 {item.data.tags && item.data.tags.length > 0 && (
                   <div class="card-tags">
                     {item.data.tags.slice(0, 3).map((tag: string) => (
-                      <span class="tag">#{tag}</span>
+                      <span 
+                        class="tag"
+                        onclick={`
+                          if (typeof window.devTalesAnalytics !== 'undefined') {
+                            window.devTalesAnalytics.trackTagClick('${tag}', 'content_card');
+                          }
+                        `}
+                      >
+                        #{tag}
+                      </span>
                     ))}
                   </div>
                 )}

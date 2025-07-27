@@ -90,6 +90,9 @@ class HamburgerMenu {
     this.navMenu.classList.add("active");
     this.body.classList.add("menu-open");
 
+    // Track mobile menu open event
+    this.trackMobileMenu("open");
+
     // Enfocar el primer enlace del menú para accesibilidad
     const firstLink = this.navMenu.querySelector("a");
     if (firstLink) {
@@ -102,6 +105,9 @@ class HamburgerMenu {
     this.menuToggle.classList.remove("active");
     this.navMenu.classList.remove("active");
     this.body.classList.remove("menu-open");
+
+    // Track mobile menu close event
+    this.trackMobileMenu("close");
   }
 
   isMenuOpen() {
@@ -119,6 +125,14 @@ class HamburgerMenu {
     this.menuToggle.parentNode.replaceChild(newMenuToggle, this.menuToggle);
 
     this.isInitialized = false;
+  }
+
+  // Función para tracking del sistema de analytics (compatible con múltiples proveedores)
+  trackMobileMenu(action) {
+    // Use new analytics system
+    if (typeof window !== "undefined" && window.devTalesAnalytics) {
+      window.devTalesAnalytics.trackMobileMenu(action);
+    }
   }
 }
 
