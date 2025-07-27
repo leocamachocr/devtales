@@ -55,14 +55,7 @@ const stats = getContentStats(tales, posts);
               )}
               <div class="card-content">
                 <h3>
-                  <a 
-                    href={url}
-                    onclick={`
-                      if (typeof window.devTalesAnalytics !== 'undefined') {
-                        window.devTalesAnalytics.trackContentClick('${contentType}', '${item.data.title.replace(/'/g, "\\'")}');
-                      }
-                    `}
-                  >
+                  <a href={url}>
                     {item.data.title}
                   </a>
                 </h3>
@@ -75,14 +68,7 @@ const stats = getContentStats(tales, posts);
                 {item.data.tags && item.data.tags.length > 0 && (
                   <div class="card-tags">
                     {item.data.tags.slice(0, 3).map((tag: string) => (
-                      <span 
-                        class="tag"
-                        onclick={`
-                          if (typeof window.devTalesAnalytics !== 'undefined') {
-                            window.devTalesAnalytics.trackTagClick('${tag}', 'content_card');
-                          }
-                        `}
-                      >
+                      <span class="tag">
                         #{tag}
                       </span>
                     ))}
