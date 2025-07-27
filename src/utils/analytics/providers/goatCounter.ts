@@ -78,8 +78,27 @@ export class GoatCounterProvider implements IAnalyticsProvider {
         // Wait a bit for goatcounter to be available
         setTimeout(() => resolve(), 100);
       };
-      script.onerror = () =>
-        reject(new Error("Failed to load GoatCounter script"));
+
+      script.onerror = () => {
+        // Don't reject, just resolve with warning - allows graceful degradation
+        console.info(
+          "GoatCounter script blocked - continuing without analytics"
+        );
+        resolve();
+      };
+
+      // Add timeout for blocked scripts
+      const timeout = setTimeout(() => {
+        console.info(
+          "GoatCounter script load timeout - likely blocked by ad blocker"
+        );
+        resolve();
+      }, 5000);
+
+      script.onload = () => {
+        clearTimeout(timeout);
+        setTimeout(() => resolve(), 100);
+      };
 
       document.head.appendChild(script);
     });
@@ -169,17 +188,28 @@ export class GoatCounterProvider implements IAnalyticsProvider {
   }
 
   private trackGoatCounterEvent(eventName: string, data: any): void {
-    if (!window.goatcounter) return;
+    if (!window.goatcounter) {
+      if (this.config?.debug) {
+        console.log(`GoatCounter event (blocked): ${eventName}`, data);
+      }
+      return;
+    }
 
-    // GoatCounter doesn't have traditional events like GA4
-    // We'll track events as special page views with event data in the path
-    const eventPath = this.formatEventPath(eventName, data);
+    try {
+      // GoatCounter doesn't have traditional events like GA4
+      // We'll track events as special page views with event data in the path
+      const eventPath = this.formatEventPath(eventName, data);
 
-    window.goatcounter.count({
-      path: eventPath,
-      title: `Event: ${eventName}`,
-      event: true,
-    });
+      window.goatcounter.count({
+        path: eventPath,
+        title: `Event: ${eventName}`,
+        event: true,
+      });
+    } catch (error) {
+      if (this.config?.debug) {
+        console.warn("GoatCounter tracking failed:", error);
+      }
+    }
   }
 
   private formatEventPath(eventName: string, data: any): string {

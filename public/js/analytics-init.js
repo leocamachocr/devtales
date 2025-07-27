@@ -8,6 +8,9 @@ class DevTalesAnalytics {
   constructor() {
     this.isInitialized = false;
     this.trackingEnabled = true;
+    this.debug =
+      window.location.hostname === "localhost" ||
+      window.location.hostname === "127.0.0.1";
     this.readingStartTime = null;
     this.scrollPercentages = [25, 50, 75, 90];
     this.scrollTracked = new Set();
@@ -32,8 +35,18 @@ class DevTalesAnalytics {
   }
 
   async loadGoatCounter() {
-    // Load GoatCounter script
+    // Load GoatCounter script with fallback handling
     return new Promise((resolve, reject) => {
+      // Check if analytics is blocked by detecting common blocking scenarios
+      if (this.isAnalyticsBlocked()) {
+        console.info(
+          "Analytics blocked by user preferences - continuing without tracking"
+        );
+        this.isInitialized = true; // Set as initialized but disabled
+        resolve();
+        return;
+      }
+
       const script = document.createElement("script");
       script.async = true;
       script.src = "//gc.zgo.at/count.js";
@@ -42,14 +55,60 @@ class DevTalesAnalytics {
         "https://leocamachocr.goatcounter.com/count"
       );
 
+      // Set a timeout to handle blocked scripts
+      const timeout = setTimeout(() => {
+        console.info(
+          "GoatCounter script load timeout - likely blocked by ad blocker"
+        );
+        this.isInitialized = true; // Continue without analytics
+        resolve();
+      }, 5000); // 5 second timeout
+
       script.onload = () => {
-        // GoatCounter automatically initializes itself
+        clearTimeout(timeout);
+        console.log("GoatCounter loaded successfully");
         resolve();
       };
 
-      script.onerror = () => reject(new Error("Failed to load GoatCounter"));
+      script.onerror = () => {
+        clearTimeout(timeout);
+        console.info(
+          "GoatCounter script blocked - continuing without analytics"
+        );
+        this.isInitialized = true; // Continue without analytics
+        resolve(); // Don't reject, just continue
+      };
+
       document.head.appendChild(script);
     });
+  }
+
+  // Check if analytics might be blocked
+  isAnalyticsBlocked() {
+    // Check for common ad blocker indicators
+    if (typeof window.navigator !== "undefined") {
+      // Check for common ad blocker user agents or extensions
+      const userAgent = window.navigator.userAgent.toLowerCase();
+
+      // Check for DNT (Do Not Track) preference
+      if (
+        window.navigator.doNotTrack === "1" ||
+        window.navigator.doNotTrack === "yes" ||
+        window.navigator.msDoNotTrack === "1"
+      ) {
+        return true;
+      }
+    }
+
+    // Check for common ad blocker window properties
+    if (typeof window !== "undefined") {
+      // These are commonly set by ad blockers
+      if (window.adblock || window.AdBlock || window.uBlockOrigin) {
+        return true;
+      }
+    }
+
+    return false;
   }
 
   setupAutoTracking() {
@@ -111,7 +170,13 @@ class DevTalesAnalytics {
 
   // GoatCounter event tracking helper
   trackGoatCounterEvent(eventName, data) {
-    if (!window.goatcounter) return;
+    // If GoatCounter is not available (blocked), just log in development
+    if (!window.goatcounter) {
+      if (this.debug) {
+        console.log(`Analytics event (blocked): ${eventName}`, data);
+      }
+      return;
+    }
 
     // Convert data to URL parameters
     const params = new URLSearchParams();
@@ -124,21 +189,33 @@ class DevTalesAnalytics {
     });
 
     // Send to GoatCounter
-    window.goatcounter.count({
-      path: `${window.location.pathname}?${params.toString()}`,
-      title: document.title,
-      event: true,
-    });
+    try {
+      window.goatcounter.count({
+        path: `${window.location.pathname}?${params.toString()}`,
+        title: document.title,
+        event: true,
+      });
+    } catch (error) {
+      if (this.debug) {
+        console.warn("GoatCounter tracking failed:", error);
+      }
+    }
   }
 
   // Helper methods
   isReady() {
+    // If initialized but GoatCounter is blocked, return false to disable tracking
     return (
       this.isInitialized &&
       this.trackingEnabled &&
       typeof window.goatcounter === "object" &&
       window.goatcounter
     );
+  }
+
+  // Check if we should attempt tracking (even if GoatCounter is blocked)
+  shouldTrack() {
+    return this.isInitialized && this.trackingEnabled;
   }
 
   getContentTypeFromURL() {
