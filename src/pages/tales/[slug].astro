@@ -15,7 +15,13 @@ const { tale } = Astro.props;
 const { Content } = await tale.render();
 ---
 
-<TalesLayout title={tale.data.title}>
+<TalesLayout 
+  title={tale.data.title}
+  description={tale.data.description}
+  image={tale.data.image}
+  imageAlt={tale.data.imageAlt || tale.data.title}
+  author={tale.data.author}
+>
   {tale.data.image && (
     <div class="hero-image">
       <img 

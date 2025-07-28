@@ -1,5 +1,18 @@
 ---
-const { title = "Leonardo Camacho" } = Astro.props;
+const { 
+  title = "Leonardo Camacho",
+  description = "DevTales - Stories that teach programming principles through real-world experiences",
+  image,
+  imageAlt,
+  type = "website",
+  author = "Leonardo Camacho",
+  url = Astro.url?.href || "https://leocamachocr.github.io/devtales/"
+} = Astro.props;
+
+// Construir la URL completa de la imagen si es relativa
+const fullImageUrl = image 
+  ? (image.startsWith('http') ? image : `https://leocamachocr.github.io${image}`)
+  : "https://leocamachocr.github.io/devtales/images/dev-tales-og-default.webp"; // Imagen por defecto
 ---
 
 <!DOCTYPE html>
@@ -8,10 +21,41 @@ const { title = "Leonardo Camacho" } = Astro.props;
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>{title}</title>
+    <meta name="description" content={description} />
+    <meta name="author" content={author} />
+    
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content={type} />
+    <meta property="og:url" content={url} />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:image" content={fullImageUrl} />
+    <meta property="og:image:alt" content={imageAlt || title} />
+    <meta property="og:site_name" content="DevTales" />
+    <meta property="og:locale" content="es_ES" />
+    
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image" />
+    <meta property="twitter:url" content={url} />
+    <meta property="twitter:title" content={title} />
+    <meta property="twitter:description" content={description} />
+    <meta property="twitter:image" content={fullImageUrl} />
+    <meta property="twitter:image:alt" content={imageAlt || title} />
+    <meta property="twitter:creator" content="@leocamachocr" />
+    
+    <!-- LinkedIn específico -->
+    <meta property="article:author" content={author} />
+    <meta name="linkedin:owner" content="Leonardo Camacho" />
+    
+    <!-- Canonical URL -->
+    <link rel="canonical" href={url} />
     
     <!-- Estilos base comunes -->
     <link rel="stylesheet" href="/devtales/styles/base.css" />
     <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet" />
+    
+    <!-- Slot para CSS adicional -->
+    <slot name="head" />
   </head>
   <body>
     <header>

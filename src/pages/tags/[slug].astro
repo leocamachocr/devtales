@@ -6,41 +6,69 @@ export async function getStaticPaths() {
   const tales = await getCollection('tales');
   const posts = await getCollection('posts');
   const allContent = [...tales, ...posts];
-  return allContent.map((item) => ({
-    params: { slug: item.slug },
-    props: { item },
+  
+  // Obtener todos los tags únicos
+  const allTags = new Set();
+  allContent.forEach(item => {
+    if (item.data.tags) {
+      item.data.tags.forEach(tag => allTags.add(tag));
+    }
+  });
+  
+  // Crear rutas para cada tag
+  return Array.from(allTags).map((tag) => ({
+    params: { slug: tag as string },
+    props: { 
+      tag: tag as string, 
+      content: allContent.filter(item => 
+        item.data.tags && item.data.tags.includes(tag as string)
+      )
+    },
   }));
 }
 
-const { item } = Astro.props;
-const { Content } = await item.render();
+const { tag, content } = Astro.props;
 ---
 
-<Layout title={item.data.title}>
-  <article class="card">
-    {item.data.image && (
-      <div class="hero-image">
-        <img 
-          src={item.data.image} 
-          alt={item.data.imageAlt || item.data.title}
-          loading="lazy"
-        />
-      </div>
-    )}
-    <h1>{item.data.title}</h1>
-    <p><small>{item.data.date.toDateString()}</small></p>
-    <p><em>by {item.data.author}</em></p>
-    <p><em>{item.data.description}</em></p>
+<Layout 
+  title={`#${tag} - DevTales`}
+  description={`Todos los posts y tales etiquetados con #${tag} en DevTales`}
+>
+  <div class="tag-page">
+    <h1>#{tag}</h1>
+    <p>{content.length} contenido{content.length !== 1 ? 's' : ''} encontrado{content.length !== 1 ? 's' : ''}</p>
     
-    {item.data.tags && item.data.tags.length > 0 && (
-      <div class="tags">
-        {item.data.tags.map((tag: string) => (
-          <a href={`/devtales/tags#${tag}`} class="tag">#{tag}</a>
-        ))}
-      </div>
-    )}
-    
-    <br/>
-    <Content />
-  </article>
+    <div class="content-grid">
+      {content.map((item) => (
+        <article class="card">
+          {item.data.image && (
+            <div class="card-thumbnail">
+              <img 
+                src={item.data.image} 
+                alt={item.data.imageAlt || item.data.title}
+                loading="lazy"
+              />
+            </div>
+          )}
+          <div class="card-content">
+            <h3>
+              <a href={`/devtales/${item.collection}/${item.slug}/`}>
+                {item.data.title}
+              </a>
+            </h3>
+            <p class="card-meta">
+              <time>{item.data.date.toDateString()}</time>
+              {item.data.author && <span> • by {item.data.author}</span>}
+            </p>
+            <p class="card-description">{item.data.description}</p>
+            <div class="card-tags">
+              {item.data.tags && item.data.tags.slice(0, 3).map((itemTag) => (
+                <span class="tag">#{itemTag}</span>
+              ))}
+            </div>
+          </div>
+        </article>
+      ))}
+    </div>
+  </div>
 </Layout>

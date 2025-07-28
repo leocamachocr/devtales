@@ -15,7 +15,13 @@ const { post } = Astro.props;
 const { Content } = await post.render();
 ---
 
-<PostsLayout title={post.data.title}>
+<PostsLayout 
+  title={post.data.title}
+  description={post.data.description}
+  image={post.data.image}
+  imageAlt={post.data.imageAlt || post.data.title}
+  author={post.data.author}
+>
   <post class="card">
     {post.data.image && (
       <div class="hero-image">
