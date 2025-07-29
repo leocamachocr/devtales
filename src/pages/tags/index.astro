@@ -4,10 +4,10 @@ import Layout from '../../layouts/Layout.astro';
 
 const tales = await getCollection('tales');
 
-// Obtener todos los tags únicos
+// Get all unique tags
 const allTags = [...new Set(tales.flatMap(tale => tale.data.tags || []))];
 
-// Agrupar tales por tag
+// Group tales by tag
 const talesByTag: Record<string, typeof tales> = {};
 allTags.forEach((tag: string) => {
   talesByTag[tag] = tales.filter(tale => tale.data.tags?.includes(tag));

@@ -13,14 +13,25 @@ export async function getStaticPaths() {
 
 const { tale } = Astro.props;
 const { Content } = await tale.render();
+
+// SEO optimized for individual tales
+const pageTitle = `${tale.data.title} | DevTales - Leonardo Camacho`;
+const pageDescription = tale.data.description;
+const pageKeywords = tale.data.tags ? tale.data.tags.join(', ') : undefined;
+const publishedTime = tale.data.date.toISOString();
 ---
 
 <TalesLayout 
-  title={tale.data.title}
-  description={tale.data.description}
+  title={pageTitle}
+  description={pageDescription}
   image={tale.data.image}
   imageAlt={tale.data.imageAlt || tale.data.title}
   author={tale.data.author}
+  type="article"
+  keywords={pageKeywords}
+  publishedTime={publishedTime}
+  section="Stories"
+  tags={tale.data.tags}
 >
   {tale.data.image && (
     <div class="hero-image">
@@ -28,27 +39,49 @@ const { Content } = await tale.render();
         src={tale.data.image} 
         alt={tale.data.imageAlt || tale.data.title}
         loading="lazy"
+        width="800"
+        height="450"
+        itemprop="image"
       />
     </div>
   )}
-  <article class="card">
-    <h1>{tale.data.title}</h1>
-    <p class="article-meta">
-      <time title={formatDate(tale.data.date)}>{formatRelativeDate(tale.data.date)}</time>
-      <span> • </span>
-      <span>by {tale.data.author}</span>
-    </p>
-    <p><em>{tale.data.description}</em></p>
-    
-    {tale.data.tags && tale.data.tags.length > 0 && (
-      <div class="tags">
-        {tale.data.tags.map((tag) => (
-          <a href={`/devtales/tags#${tag}`} class="tag">#{tag}</a>
-        ))}
+  <article class="card" itemscope itemtype="https://schema.org/BlogPosting">
+    <header>
+      <h1 itemprop="headline">{tale.data.title}</h1>
+      <div class="article-meta">
+        <time datetime={tale.data.date.toISOString()} title={formatDate(tale.data.date)} itemprop="datePublished">
+          {formatRelativeDate(tale.data.date)}
+        </time>
+        <span> • </span>
+        <span itemprop="author" itemscope itemtype="https://schema.org/Person">
+          by <span itemprop="name">{tale.data.author}</span>
+        </span>
+        <span> • </span>
+        <span itemprop="wordCount">{Math.ceil(tale.body.split(' ').length / 200)} min read</span>
       </div>
-    )}
+      <p class="article-description" itemprop="description"><em>{tale.data.description}</em></p>
+      
+      {tale.data.tags && tale.data.tags.length > 0 && (
+        <div class="tags">
+          {tale.data.tags.map((tag) => (
+            <a href={`/devtales/tags/${tag.toLowerCase().replace(/\s+/g, '-')}`} class="tag" itemprop="keywords">#{tag}</a>
+          ))}
+        </div>
+      )}
+    </header>
     
-    <br/>
-    <Content />
+    <div class="article-content" itemprop="articleBody">
+      <Content />
+    </div>
+
+    <footer class="article-footer">
+      <div class="author-bio" itemprop="author" itemscope itemtype="https://schema.org/Person">
+        <h3>About the author</h3>
+        <p>
+          <strong itemprop="name">Leonardo Camacho</strong> is a software engineer who transforms technical experiences into narratives. 
+          <a href="/devtales/about" itemprop="url">Learn more about Leonardo</a>
+        </p>
+      </div>
+    </footer>
   </article>
 </TalesLayout>

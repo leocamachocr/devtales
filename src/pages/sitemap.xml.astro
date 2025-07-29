@@ -1,0 +1,59 @@
+---
+import { getCollection } from 'astro:content';
+
+const posts = await getCollection('posts');
+const tales = await getCollection('tales');
+
+const baseUrl = 'https://leocamachocr.github.io/devtales';
+
+// Static pages
+const staticPages = [
+  { url: '', priority: '1.0', changefreq: 'weekly' },
+  { url: '/posts', priority: '0.9', changefreq: 'weekly' },
+  { url: '/tales', priority: '0.9', changefreq: 'weekly' },
+  { url: '/tags', priority: '0.8', changefreq: 'weekly' },
+  { url: '/about', priority: '0.7', changefreq: 'monthly' },
+];
+
+// Dynamic pages (posts and tales)
+const dynamicPages = [
+  ...posts.map(post => ({
+    url: `/posts/${post.slug}`,
+    priority: '0.8',
+    changefreq: 'monthly',
+    lastmod: post.data.date.toISOString().split('T')[0]
+  })),
+  ...tales.map(tale => ({
+    url: `/tales/${tale.slug}`,
+    priority: '0.8', 
+    changefreq: 'monthly',
+    lastmod: tale.data.date.toISOString().split('T')[0]
+  }))
+];
+
+// Get unique tags
+const allTags = [...new Set([
+  ...posts.flatMap(post => post.data.tags || []),
+  ...tales.flatMap(tale => tale.data.tags || [])
+])];
+
+const tagPages = allTags.map(tag => ({
+  url: `/tags/${tag.toLowerCase().replace(/\s+/g, '-')}`,
+  priority: '0.6',
+  changefreq: 'weekly'
+}));
+
+const allPages = [...staticPages, ...dynamicPages, ...tagPages];
+---
+
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  {allPages.map(page => (
+    <url>
+      <loc>{baseUrl}{page.url}</loc>
+      <priority>{page.priority}</priority>
+      <changefreq>{page.changefreq}</changefreq>
+      {page.lastmod && <lastmod>{page.lastmod}</lastmod>}
+    </url>
+  ))}
+</urlset>

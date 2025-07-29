@@ -6,23 +6,73 @@ const {
   imageAlt,
   type = "website",
   author = "Leonardo Camacho",
-  url = Astro.url?.href || "https://leocamachocr.github.io/devtales/"
+  url = Astro.url?.href || "https://leocamachocr.github.io/devtales/",
+  keywords,
+  publishedTime,
+  modifiedTime,
+  section,
+  tags
 } = Astro.props;
 
 // Construir la URL completa de la imagen si es relativa
 const fullImageUrl = image 
   ? (image.startsWith('http') ? image : `https://leocamachocr.github.io${image}`)
-  : "https://leocamachocr.github.io/devtales/images/dev-tales-og-default.webp"; // Imagen por defecto
+  : "https://leocamachocr.github.io/devtales/images/dev-tales-og-default.webp"; // Default image
+
+// Default keywords if none provided
+const defaultKeywords = "software development, programming, kotlin, java, clean code, software architecture, backend, frontend, devops, technology";
+const finalKeywords = keywords || defaultKeywords;
+
+// Generate structured data for SEO
+const structuredData = {
+  "@context": "https://schema.org",
+  "@type": type === "article" ? "BlogPosting" : "WebSite",
+  "name": title,
+  "headline": title,
+  "description": description,
+  "url": url,
+  "image": fullImageUrl,
+  "author": {
+    "@type": "Person",
+    "name": author,
+    "url": "https://leocamachocr.github.io/devtales/about"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "DevTales",
+    "url": "https://leocamachocr.github.io/devtales/",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "https://leocamachocr.github.io/devtales/images/dev-tales-og-default.webp"
+    }
+  },
+  ...(publishedTime && { "datePublished": publishedTime }),
+  ...(modifiedTime && { "dateModified": modifiedTime }),
+  ...(section && { "articleSection": section }),
+  "inLanguage": "en-US",
+  "mainEntityOfPage": {
+    "@type": "WebPage",
+    "@id": url
+  }
+};
 ---
 
 <!DOCTYPE html>
-<html lang="es">
+<html lang="en">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    
+    <!-- SEO Meta Tags -->
     <title>{title}</title>
     <meta name="description" content={description} />
+    <meta name="keywords" content={finalKeywords} />
     <meta name="author" content={author} />
+    <meta name="robots" content="index, follow" />
+    <meta name="language" content="English" />
+    <meta name="revisit-after" content="7 days" />
+    <meta name="distribution" content="web" />
+    <meta name="rating" content="general" />
     
     <!-- Open Graph / Facebook -->
     <meta property="og:type" content={type} />
@@ -31,8 +81,14 @@ const fullImageUrl = image
     <meta property="og:description" content={description} />
     <meta property="og:image" content={fullImageUrl} />
     <meta property="og:image:alt" content={imageAlt || title} />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
     <meta property="og:site_name" content="DevTales" />
-    <meta property="og:locale" content="es_ES" />
+    <meta property="og:locale" content="en_US" />
+    {publishedTime && <meta property="article:published_time" content={publishedTime} />}
+    {modifiedTime && <meta property="article:modified_time" content={modifiedTime} />}
+    {section && <meta property="article:section" content={section} />}
+    {tags && tags.map((tag: string) => <meta property="article:tag" content={tag} />)}
     
     <!-- Twitter -->
     <meta property="twitter:card" content="summary_large_image" />
@@ -42,53 +98,68 @@ const fullImageUrl = image
     <meta property="twitter:image" content={fullImageUrl} />
     <meta property="twitter:image:alt" content={imageAlt || title} />
     <meta property="twitter:creator" content="@leocamachocr" />
+    <meta property="twitter:site" content="@leocamachocr" />
     
-    <!-- LinkedIn específico -->
+    <!-- LinkedIn specific -->
     <meta property="article:author" content={author} />
     <meta name="linkedin:owner" content="Leonardo Camacho" />
     
     <!-- Canonical URL -->
     <link rel="canonical" href={url} />
     
-    <!-- Estilos base comunes -->
+    <!-- Preconnect to improve performance -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    
+    <!-- Optimized favicon -->
+    <link rel="icon" type="image/svg+xml" href="/devtales/favicon.svg" />
+    <link rel="apple-touch-icon" sizes="180x180" href="/devtales/images/dev-tales-og-default.webp" />
+    
+    <!-- Structured Data JSON-LD -->
+    <script type="application/ld+json" set:html={JSON.stringify(structuredData)} />
+    
+    <!-- Common base styles -->
     <link rel="stylesheet" href="/devtales/styles/base.css" />
     <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet" />
     
-    <!-- Slot para CSS adicional -->
+    <!-- Slot for additional CSS -->
     <slot name="head" />
   </head>
   <body>
-    <header>
+    <!-- Skip to main content for accessibility -->
+    <a href="#main-content" class="skip-link">Skip to main content</a>
+    
+    <header role="banner">
       <div class="header-content">
-        <h1>DevTales</h1>
+        <h1><a href="/devtales/" rel="home">DevTales</a></h1>
         
-        <!-- Botón hamburguesa -->
-        <button class="menu-toggle" aria-label="Toggle menu" aria-expanded="false">
+        <!-- Hamburger button -->
+        <button class="menu-toggle" aria-label="Open navigation menu" aria-expanded="false" aria-controls="nav-menu">
           <span class="hamburger-line"></span>
           <span class="hamburger-line"></span>
           <span class="hamburger-line"></span>
         </button>
         
-        <!-- Navegación -->
-        <nav class="nav-menu">
-          <a href="/devtales/">Home</a>
-          <a href="/devtales/posts">Posts</a>
-          <a href="/devtales/tales">Tales</a>
-          <a href="/devtales/tags">Tags</a>
-          <a href="/devtales/about">About</a>
+        <!-- Navigation -->
+        <nav class="nav-menu" role="navigation" aria-label="Main navigation" id="nav-menu">
+          <a href="/devtales/" aria-current={Astro.url.pathname === '/devtales/' ? 'page' : undefined}>Home</a>
+          <a href="/devtales/posts" aria-current={Astro.url.pathname.includes('/posts') ? 'page' : undefined}>Posts</a>
+          <a href="/devtales/tales" aria-current={Astro.url.pathname.includes('/tales') ? 'page' : undefined}>Tales</a>
+          <a href="/devtales/tags" aria-current={Astro.url.pathname.includes('/tags') ? 'page' : undefined}>Tags</a>
+          <a href="/devtales/about" aria-current={Astro.url.pathname.includes('/about') ? 'page' : undefined}>About</a>
         </nav>
       </div>
     </header>
 
-    <main>
+    <main role="main" id="main-content">
       <slot />
     </main>
 
-    <footer>
-      &copy; 2025 Leonardo Camacho – Tales for devs.
+    <footer role="contentinfo">
+      <p>&copy; 2025 <a href="/devtales/about" rel="author">Leonardo Camacho</a> – Tales for devs.</p>
     </footer>
 
-    <!-- JavaScript del menú hamburguesa con defer para mejor rendimiento -->
+    <!-- Hamburger menu JavaScript with defer for better performance -->
     <script src="/devtales/js/hamburger-menu.js" defer></script>
   </body>
 </html>

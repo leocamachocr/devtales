@@ -7,7 +7,7 @@ export async function getStaticPaths() {
   const posts = await getCollection('posts');
   const allContent = [...tales, ...posts];
   
-  // Obtener todos los tags únicos
+  // Get all unique tags
   const allTags = new Set();
   allContent.forEach(item => {
     if (item.data.tags) {
@@ -15,7 +15,7 @@ export async function getStaticPaths() {
     }
   });
   
-  // Crear rutas para cada tag
+  // Create routes for each tag
   return Array.from(allTags).map((tag) => ({
     params: { slug: tag as string },
     props: { 
@@ -32,11 +32,11 @@ const { tag, content } = Astro.props;
 
 <Layout 
   title={`#${tag} - DevTales`}
-  description={`Todos los posts y tales etiquetados con #${tag} en DevTales`}
+  description={`All posts and tales tagged with #${tag} on DevTales`}
 >
   <div class="tag-page">
     <h1>#{tag}</h1>
-    <p>{content.length} contenido{content.length !== 1 ? 's' : ''} encontrado{content.length !== 1 ? 's' : ''}</p>
+    <p>{content.length} content{content.length !== 1 ? 's' : ''} found</p>
     
     <div class="content-grid">
       {content.map((item) => (

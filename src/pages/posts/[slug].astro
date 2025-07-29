@@ -13,42 +13,76 @@ export async function getStaticPaths() {
 
 const { post } = Astro.props;
 const { Content } = await post.render();
+
+// SEO optimized for individual posts
+const pageTitle = `${post.data.title} | DevTales - Leonardo Camacho`;
+const pageDescription = post.data.description;
+const pageKeywords = post.data.tags ? post.data.tags.join(', ') : undefined;
+const publishedTime = post.data.date.toISOString();
 ---
 
 <PostsLayout 
-  title={post.data.title}
-  description={post.data.description}
+  title={pageTitle}
+  description={pageDescription}
   image={post.data.image}
   imageAlt={post.data.imageAlt || post.data.title}
   author={post.data.author}
+  type="article"
+  keywords={pageKeywords}
+  publishedTime={publishedTime}
+  section="Programming"
+  tags={post.data.tags}
 >
-  <post class="card">
+  <article class="card" itemscope itemtype="https://schema.org/BlogPosting">
     {post.data.image && (
       <div class="hero-image">
         <img 
           src={post.data.image} 
           alt={post.data.imageAlt || post.data.title}
           loading="lazy"
+          width="800"
+          height="450"
+          itemprop="image"
         />
       </div>
     )}
-    <h1>{post.data.title}</h1>
-    <p class="article-meta">
-      <time title={formatDate(post.data.date)}>{formatRelativeDate(post.data.date)}</time>
-      <span> • </span>
-      <span>by {post.data.author}</span>
-    </p>
-    <p><em>{post.data.description}</em></p>
-    
-    {post.data.tags && post.data.tags.length > 0 && (
-      <div class="tags">
-        {post.data.tags.map((tag) => (
-          <a href={`/devtales/tags#${tag}`} class="tag">#{tag}</a>
-        ))}
+    <header>
+      <h1 itemprop="headline">{post.data.title}</h1>
+      <div class="article-meta">
+        <time datetime={post.data.date.toISOString()} title={formatDate(post.data.date)} itemprop="datePublished">
+          {formatRelativeDate(post.data.date)}
+        </time>
+        <span> • </span>
+        <span itemprop="author" itemscope itemtype="https://schema.org/Person">
+          by <span itemprop="name">{post.data.author}</span>
+        </span>
+        <span> • </span>
+        <span itemprop="wordCount">{Math.ceil(post.body.split(' ').length / 200)} min read</span>
       </div>
-    )}
+      <p class="article-description" itemprop="description"><em>{post.data.description}</em></p>
+      
+      {post.data.tags && post.data.tags.length > 0 && (
+        <div class="tags">
+          {post.data.tags.map((tag) => (
+            <a href={`/devtales/tags/${tag.toLowerCase().replace(/\s+/g, '-')}`} class="tag" itemprop="keywords">#{tag}</a>
+          ))}
+        </div>
+      )}
+    </header>
     
-    <br/>
-    <Content />
-  </post>
+    <div class="article-content" itemprop="articleBody">
+      <Content />
+    </div>
+
+    <footer class="article-footer">
+      <div class="author-bio" itemprop="author" itemscope itemtype="https://schema.org/Person">
+        <h3>About the author</h3>
+        <p>
+          <strong itemprop="name">Leonardo Camacho</strong> is a software engineer with experience in backend development, 
+          systems architecture and programming best practices. 
+          <a href="/devtales/about" itemprop="url">Learn more about Leonardo</a>
+        </p>
+      </div>
+    </footer>
+  </article>
 </PostsLayout>

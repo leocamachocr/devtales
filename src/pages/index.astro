@@ -19,34 +19,53 @@ const allContent = combineAndSortContent(tales, posts, 6);
 
 // Get content statistics (optional - for future use)
 const stats = getContentStats(tales, posts);
+
+// SEO optimized for homepage
+const pageTitle = "DevTales - Leonardo Camacho | Software Development Stories";
+const pageDescription = "Discover real software development stories, programming best practices, architecture, and experiences with Kotlin, Java, and more. Blog by Leonardo Camacho.";
+const pageKeywords = "software development, programming, kotlin, java, clean code, software architecture, backend, frontend, devops, technology, programming blog, leonardo camacho";
 ---
 
-<Layout title="Dev Tales - Leonardo Camacho">
-  <!-- <section class="hero">
-    <h1>Welcome to Dev Tales</h1>
+<Layout 
+  title={pageTitle}
+  description={pageDescription}
+  keywords={pageKeywords}
+  type="website"
+>
+  <!-- Hero section optimized for SEO -->
+  <section class="hero" role="banner">
+    <h1>Welcome to DevTales</h1>
     <p class="hero-description">
-      I'm Leonardo Camacho, a software engineer who believes code tells stories.
+      I'm <strong>Leonardo Camacho</strong>, a software engineer who believes code tells stories.
       Here, you'll find real-world experiences, lessons learned, and perspectives on building software — 
       all wrapped in stories that make tech feel human.
     </p>
-  </section> -->
+    <div class="hero-stats">
+      <span><strong>{posts.length}</strong> technical articles</span>
+      <span><strong>{tales.length}</strong> narrative stories</span>
+      <span><strong>{posts.length + tales.length}</strong> shared experiences</span>
+    </div>
+  </section>
 
   {allContent.length > 0 && (
-    <section class="featured-content">
-      {/* <h2>Latest Stories & Articles</h2> */}
+    <section class="featured-content" role="main">
+      <h2>Latest Stories and Articles</h2>
       <div class="content-grid">
         {allContent.map((item) => {
           const contentType = getContentType(item.slug, tales);
           const url = getContentUrl(item, tales);
           
           return (
-            <article class="content-card">
+            <article class="content-card" itemscope itemtype="https://schema.org/BlogPosting">
               {item.data.image && (
                 <div class="card-thumbnail">
                   <img 
                     src={item.data.image} 
                     alt={item.data.imageAlt || item.data.title}
                     loading="lazy"
+                    width="400"
+                    height="225"
+                    itemprop="image"
                   />
                   <div class="content-type-badge">
                     {contentType}
@@ -54,23 +73,29 @@ const stats = getContentStats(tales, posts);
                 </div>
               )}
               <div class="card-content">
-                <h3>
-                  <a href={url}>
+                <h3 itemprop="headline">
+                  <a href={url} itemprop="url">
                     {item.data.title}
                   </a>
                 </h3>
                 <p class="card-meta">
-                  <time title={formatDate(item.data.date)}>{formatRelativeDate(item.data.date)}</time>
+                  <time datetime={item.data.date.toISOString()} title={formatDate(item.data.date)} itemprop="datePublished">
+                    {formatRelativeDate(item.data.date)}
+                  </time>
                   <span class="separator">•</span>
-                  <span class="content-category">{item.data.category}</span>
+                  <span class="content-category" itemprop="articleSection">{item.data.category}</span>
+                  <span class="separator">•</span>
+                  <span itemprop="author" itemscope itemtype="https://schema.org/Person">
+                    By <span itemprop="name">Leonardo Camacho</span>
+                  </span>
                 </p>
-                <p class="card-description">{item.data.description}</p>
+                <p class="card-description" itemprop="description">{item.data.description}</p>
                 {item.data.tags && item.data.tags.length > 0 && (
                   <div class="card-tags">
                     {item.data.tags.slice(0, 3).map((tag: string) => (
-                      <span class="tag">
+                      <a href={`/devtales/tags/${tag.toLowerCase().replace(/\s+/g, '-')}`} class="tag" itemprop="keywords">
                         #{tag}
-                      </span>
+                      </a>
                     ))}
                   </div>
                 )}
@@ -80,8 +105,8 @@ const stats = getContentStats(tales, posts);
         })}
       </div>
       <div class="view-all-actions">
-        <a href="/devtales/tales" class="view-all-link">View All Tales →</a>
-        <a href="/devtales/posts" class="view-all-link">View All Posts →</a>
+        <a href="/devtales/tales" class="view-all-link">View All Stories →</a>
+        <a href="/devtales/posts" class="view-all-link">View All Articles →</a>
       </div>
     </section>
   )}
@@ -93,6 +118,9 @@ const stats = getContentStats(tales, posts);
     padding: 4rem 2rem;
     max-width: 800px;
     margin: 0 auto;
+    background: linear-gradient(135deg, var(--color-bg) 0%, rgba(159, 134, 192, 0.05) 100%);
+    border-radius: var(--radius);
+    margin-bottom: 3rem;
   }
 
   .hero h1 {
@@ -106,7 +134,29 @@ const stats = getContentStats(tales, posts);
     font-size: 1.2rem;
     line-height: 1.7;
     color: var(--color-text);
-    margin-bottom: 2.5rem;
+    margin-bottom: 2rem;
+  }
+
+  .hero-stats {
+    display: flex;
+    justify-content: center;
+    gap: 2rem;
+    flex-wrap: wrap;
+    margin-top: 2rem;
+  }
+
+  .hero-stats span {
+    background: var(--color-card-bg);
+    padding: 1rem 1.5rem;
+    border-radius: var(--radius);
+    box-shadow: var(--shadow-light);
+    border: 1px solid var(--color-border);
+  }
+
+  .hero-stats strong {
+    color: var(--color-accent);
+    font-size: 1.5rem;
+    display: block;
   }
 
   .hero-actions {
