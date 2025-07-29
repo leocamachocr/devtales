@@ -1,0 +1,18 @@
+User-agent: *
+Allow: /
+
+# Sitemap
+Sitemap: https://leocamachocr.github.io/devtales/sitemap.xml
+
+# Disallow common non-content paths
+Disallow: /api/
+Disallow: /admin/
+Disallow: /.git/
+Disallow: /node_modules/
+
+# Allow all crawlers to access content
+Allow: /devtales/
+Allow: /devtales/posts/
+Allow: /devtales/tales/
+Allow: /devtales/tags/
+Allow: /devtales/about/

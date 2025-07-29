@@ -22,6 +22,24 @@
   padding: 0;
 }
 
+/* Skip link para accesibilidad y SEO */
+.skip-link {
+  position: absolute;
+  top: -40px;
+  left: 6px;
+  background: var(--color-accent);
+  color: white;
+  padding: 8px;
+  text-decoration: none;
+  z-index: 100;
+  border-radius: 4px;
+  font-weight: 600;
+}
+
+.skip-link:focus {
+  top: 6px;
+}
+
 /* Estilos base del body */
 body {
   background-color: var(--color-bg);
