@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -15,17 +14,19 @@
             -webkit-tap-highlight-color: transparent;
         }
 
-        body {
-            font-family: 'Courier New', monospace;
-            background: #000;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-            overflow-x: hidden;
-            position: relative;
-            padding: 10px;
-        }
+body {
+    font-family: 'Courier New', monospace;
+    background: #000;
+    display: flex;
+    flex-direction: column;   /* contenido en columna */
+    align-items: center;      /* centrado horizontal */
+    min-height: 100vh;
+    overflow-x: hidden;
+    /* overflow-y: auto;  (opcional, por si quieres forzarlo) */
+    position: relative;
+    padding: 10px 10px 40px;  /* un poco de espacio abajo */
+}
+
 
         .stars {
             position: fixed;
@@ -89,13 +90,17 @@
         }
 
         /* SECURITY SCREEN */
-        .security-container {
-            position: relative;
-            z-index: 10;
-            max-width: 500px;
-            width: 100%;
-            transition: opacity 0.5s, transform 0.5s;
-        }
+      .security-container {
+    position: fixed;              /* overlay encima de todo */
+    inset: 0;                     /* top/right/bottom/left: 0 */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 10px;
+    z-index: 10;
+    transition: opacity 0.5s, transform 0.5s;
+}
+
 
         .security-container.hidden {
             opacity: 0;
@@ -260,16 +265,18 @@
         }
 
         /* INVITATION SCREEN */
-        .invitation-container {
-            position: absolute;
-            z-index: 10;
-            max-width: 500px;
-            width: 100%;
-            opacity: 0;
-            transform: scale(0.5) rotateX(-90deg);
-            pointer-events: none;
-            transition: all 1s cubic-bezier(0.68, -0.55, 0.265, 1.55);
-        }
+.invitation-container {
+    position: relative;              
+    z-index: 10;
+    max-width: 500px;
+    width: 100%;
+    margin: 20px auto;               
+    opacity: 0;
+    transform: scale(0.5) rotateX(-90deg);
+    pointer-events: none;
+    transition: all 1s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+}
+
 
         .invitation-container.visible {
             opacity: 1;
@@ -432,31 +439,69 @@
             flex-wrap: wrap;
             gap: 8px;
         }
+.light {
+    width: 12px;
+    height: 22px;
+    color: #ff3b3b;
+    background: currentColor;
+    /* hace forma de gota: más redondeado abajo */
+    border-radius: 50% 50% 70% 70% / 35% 35% 80% 80%;
+    position: relative;
+    animation: lightBlink 1s infinite;
+    box-shadow: 0 0 6px currentColor;
+    transform: rotate(-15deg);
+}
 
-        .light {
-            width: 12px;
-            height: 12px;
-            border-radius: 50%;
-            animation: lightBlink 1s infinite;
-        }
+/* casquillo */
+.light::before {
+    content: "";
+    position: absolute;
+    top: -4px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 8px;
+    height: 4px;
+    background: #555;
+    border-radius: 2px;
+}
 
-        .light:nth-child(1) { background: #ff0000; animation-delay: 0s; }
-        .light:nth-child(2) { background: #00ff00; animation-delay: 0.2s; }
-        .light:nth-child(3) { background: #0000ff; animation-delay: 0.4s; }
-        .light:nth-child(4) { background: #ffff00; animation-delay: 0.6s; }
-        .light:nth-child(5) { background: #ff00ff; animation-delay: 0.8s; }
-        .light:nth-child(6) { background: #00ffff; animation-delay: 1s; }
+/* punta redondeada integrada */
+.light::after {
+    content: "";
+    position: absolute;
+    bottom: -2px; /* más arriba → se fusiona mejor */
+    left: 50%;
+    transform: translateX(-50%);
+    width: 9px;
+    height: 10px;
+    background: currentColor;
 
-        @keyframes lightBlink {
-            0%, 100% { 
-                box-shadow: 0 0 5px currentColor;
-                opacity: 0.5;
-            }
-            50% { 
-                box-shadow: 0 0 15px currentColor;
-                opacity: 1;
-            }
-        }
+    /* forma MUY redondeada → simula la gota natural */
+    border-radius: 50% 50% 80% 80%;
+
+    /* sombrita interna para que parezca parte del bombillo */
+    filter: brightness(1.05);
+}
+
+/* animación */
+@keyframes lightBlink {
+    0%, 100% { 
+        box-shadow: 0 0 5px currentColor;
+        opacity: 0.5;
+    }
+    50% { 
+        box-shadow: 0 0 15px currentColor;
+        opacity: 1;
+    }
+}
+
+/* colores */
+.light:nth-child(1) { color: #ff0000; animation-delay: 0s; }
+.light:nth-child(2) { color: #00ff00; animation-delay: 0.2s; }
+.light:nth-child(3) { color: #0000ff; animation-delay: 0.4s; }
+.light:nth-child(4) { color: #ffff00; animation-delay: 0.6s; }
+.light:nth-child(5) { color: #ff00ff; animation-delay: 0.8s; }
+.light:nth-child(6) { color: #00ffff; animation-delay: 1s; }
 
         .footer {
             text-align: center;
@@ -525,8 +570,8 @@
     <!-- INVITATION SCREEN -->
     <div class="invitation-container" id="invitationScreen">
         <div class="invitation">
-            <div class="title">STRANGER</div>
-            <div class="title" style="margin-top: -10px;">THINGS</div>
+            <div class="title">ISAAC</div>
+            <div class="title" style="margin-top: -10px;">CUMPLE!</div>
             <div class="subtitle">TRANSMISIÓN INTERCEPTADA</div>
 
             <div class="lights">
@@ -693,20 +738,22 @@
             document.getElementById('answerInput').value = '';
         }
 
-        // Mostrar invitación con efecto
-        function showInvitation() {
-            const securityScreen = document.getElementById('securityScreen');
-            const invitationScreen = document.getElementById('invitationScreen');
-            
-            // Ocultar pantalla de seguridad
-            securityScreen.classList.add('hidden');
-            
-            // Mostrar invitación después de un momento
-            setTimeout(() => {
-                invitationScreen.classList.add('visible');
-                randomGlitch();
-            }, 600);
-        }
+function showInvitation() {
+    const securityScreen = document.getElementById('securityScreen');
+    const invitationScreen = document.getElementById('invitationScreen');
+    
+    // Ocultar pantalla de seguridad con animación
+    securityScreen.classList.add('hidden');
+    
+    // Después de la animación, la quitamos del flujo y mostramos la invitación
+    setTimeout(() => {
+        securityScreen.style.display = 'none';           // <- ya no ocupa espacio ni intercepta nada
+        invitationScreen.classList.add('visible');
+        randomGlitch();
+        window.scrollTo({ top: 0, behavior: 'smooth' }); // opcional: subir al inicio
+    }, 600); // mismo tiempo que tu transición
+}
+
 
         // Crear estrellas en el fondo
         function createStars() {
