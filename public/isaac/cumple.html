@@ -1,1 +1,772 @@
 
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Invitación Cumpleaños Isaac - Stranger Things</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Benguiat+Bold&display=swap');
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            font-family: 'Courier New', monospace;
+            background: #000;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            overflow-x: hidden;
+            position: relative;
+            padding: 10px;
+        }
+
+        .stars {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        .star {
+            position: absolute;
+            background: white;
+            border-radius: 50%;
+            animation: twinkle 3s infinite;
+        }
+
+        @keyframes twinkle {
+            0%, 100% { opacity: 0.3; }
+            50% { opacity: 1; }
+        }
+
+        .upside-down {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle, transparent 20%, rgba(255, 0, 0, 0.1) 80%);
+            pointer-events: none;
+            animation: upsideDownPulse 4s infinite;
+            z-index: 2;
+        }
+
+        @keyframes upsideDownPulse {
+            0%, 100% { opacity: 0.3; }
+            50% { opacity: 0.6; }
+        }
+
+        .scanline {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(
+                to bottom,
+                transparent 50%,
+                rgba(255, 0, 0, 0.05) 51%
+            );
+            background-size: 100% 4px;
+            pointer-events: none;
+            animation: scan 8s linear infinite;
+            z-index: 3;
+        }
+
+        @keyframes scan {
+            0% { transform: translateY(0); }
+            100% { transform: translateY(100%); }
+        }
+
+        /* SECURITY SCREEN */
+        .security-container {
+            position: relative;
+            z-index: 10;
+            max-width: 500px;
+            width: 100%;
+            transition: opacity 0.5s, transform 0.5s;
+        }
+
+        .security-container.hidden {
+            opacity: 0;
+            transform: scale(0.8);
+            pointer-events: none;
+        }
+
+        .security-box {
+            background: #0a0a0a;
+            border: 2px solid #ff0000;
+            border-radius: 8px;
+            padding: 25px 20px;
+            box-shadow: 0 0 30px rgba(255, 0, 0, 0.5),
+                        inset 0 0 30px rgba(255, 0, 0, 0.1);
+            position: relative;
+            animation: flicker 0.15s infinite alternate;
+        }
+
+        @keyframes flicker {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.95; }
+        }
+
+        .security-title {
+            font-family: 'Courier New', monospace;
+            font-size: clamp(24px, 8vw, 32px);
+            font-weight: bold;
+            text-align: center;
+            color: #ff0000;
+            text-shadow: 
+                0 0 10px #ff0000,
+                0 0 20px #ff0000,
+                0 0 30px #ff0000;
+            letter-spacing: 3px;
+            margin-bottom: 10px;
+            animation: glow 2s ease-in-out infinite;
+        }
+
+        @keyframes glow {
+            0%, 100% { 
+                text-shadow: 
+                    0 0 10px #ff0000,
+                    0 0 20px #ff0000,
+                    0 0 30px #ff0000;
+            }
+            50% { 
+                text-shadow: 
+                    0 0 20px #ff0000,
+                    0 0 30px #ff0000,
+                    0 0 40px #ff0000;
+            }
+        }
+
+        .security-subtitle {
+            font-size: clamp(11px, 3vw, 14px);
+            color: #ff0000;
+            text-align: center;
+            margin-bottom: 25px;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+        }
+
+        .question-box {
+            background: rgba(20, 20, 20, 0.8);
+            border: 2px solid #ff0000;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 5px;
+            box-shadow: inset 0 0 20px rgba(255, 0, 0, 0.2);
+        }
+
+        .question-text {
+            color: #00ff00;
+            font-size: clamp(14px, 4vw, 16px);
+            line-height: 1.6;
+            text-shadow: 0 0 5px #00ff00;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .input-container {
+            position: relative;
+            margin-bottom: 15px;
+        }
+
+        .security-input {
+            width: 100%;
+            padding: 15px;
+            font-size: clamp(14px, 4vw, 16px);
+            font-family: 'Courier New', monospace;
+            background: rgba(0, 0, 0, 0.8);
+            border: 2px solid #ff0000;
+            border-radius: 5px;
+            color: #00ff00;
+            text-shadow: 0 0 5px #00ff00;
+            outline: none;
+            transition: all 0.3s;
+        }
+
+        .security-input:focus {
+            border-color: #00ff00;
+            box-shadow: 0 0 20px rgba(0, 255, 0, 0.3);
+        }
+
+        .security-button {
+            width: 100%;
+            padding: 15px;
+            font-size: clamp(14px, 4vw, 16px);
+            font-family: 'Courier New', monospace;
+            font-weight: bold;
+            background: #ff0000;
+            border: none;
+            border-radius: 5px;
+            color: #fff;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 0 20px rgba(255, 0, 0, 0.5);
+        }
+
+        .security-button:hover {
+            background: #cc0000;
+            box-shadow: 0 0 30px rgba(255, 0, 0, 0.8);
+            transform: scale(1.02);
+        }
+
+        .security-button:active {
+            transform: scale(0.98);
+        }
+
+        .error-message {
+            color: #ff0000;
+            font-size: clamp(12px, 3vw, 14px);
+            text-align: center;
+            margin-top: 15px;
+            text-shadow: 0 0 10px #ff0000;
+            animation: shake-error 0.5s;
+            display: none;
+        }
+
+        .error-message.show {
+            display: block;
+        }
+
+        @keyframes shake-error {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-10px); }
+            75% { transform: translateX(10px); }
+        }
+
+        .lock-icon {
+            text-align: center;
+            font-size: clamp(40px, 12vw, 60px);
+            margin-bottom: 15px;
+            animation: pulse-lock 2s infinite;
+        }
+
+        @keyframes pulse-lock {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+        }
+
+        /* INVITATION SCREEN */
+        .invitation-container {
+            position: absolute;
+            z-index: 10;
+            max-width: 500px;
+            width: 100%;
+            opacity: 0;
+            transform: scale(0.5) rotateX(-90deg);
+            pointer-events: none;
+            transition: all 1s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+        }
+
+        .invitation-container.visible {
+            opacity: 1;
+            transform: scale(1) rotateX(0deg);
+            pointer-events: auto;
+        }
+
+        .invitation {
+            background: #0a0a0a;
+            border: 2px solid #ff0000;
+            border-radius: 8px;
+            padding: 20px 15px;
+            box-shadow: 0 0 30px rgba(255, 0, 0, 0.5),
+                        inset 0 0 30px rgba(255, 0, 0, 0.1);
+            position: relative;
+            animation: flicker 0.15s infinite alternate;
+        }
+
+        .title {
+            font-family: 'Courier New', monospace;
+            font-size: clamp(28px, 10vw, 38px);
+            font-weight: bold;
+            text-align: center;
+            color: #ff0000;
+            text-shadow: 
+                0 0 10px #ff0000,
+                0 0 20px #ff0000,
+                0 0 30px #ff0000;
+            letter-spacing: 4px;
+            margin-bottom: 5px;
+            animation: glow 2s ease-in-out infinite;
+        }
+
+        .subtitle {
+            font-size: clamp(10px, 3vw, 14px);
+            color: #ff0000;
+            text-align: center;
+            margin-bottom: 20px;
+            letter-spacing: 2px;
+        }
+
+        .message-box {
+            background: rgba(20, 20, 20, 0.8);
+            border: 2px solid #ff0000;
+            padding: 15px;
+            margin: 15px 0;
+            position: relative;
+            box-shadow: inset 0 0 20px rgba(255, 0, 0, 0.2);
+        }
+
+        .message-box::before {
+            content: '';
+            position: absolute;
+            top: -2px;
+            left: -2px;
+            right: -2px;
+            bottom: -2px;
+            background: linear-gradient(45deg, #ff0000, transparent, #ff0000);
+            opacity: 0.3;
+            animation: borderGlow 3s linear infinite;
+            pointer-events: none;
+        }
+
+        @keyframes borderGlow {
+            0%, 100% { opacity: 0.3; }
+            50% { opacity: 0.6; }
+        }
+
+        .message-text {
+            color: #00ff00;
+            font-size: clamp(12px, 3.5vw, 15px);
+            line-height: 1.6;
+            text-shadow: 0 0 5px #00ff00;
+            font-family: 'Courier New', monospace;
+        }
+
+        .highlight {
+            color: #ff0000;
+            font-weight: bold;
+            text-shadow: 0 0 10px #ff0000;
+            font-size: clamp(14px, 4vw, 18px);
+        }
+
+        .demogorgon {
+            text-align: center;
+            font-size: clamp(50px, 15vw, 70px);
+            margin: 15px 0;
+            animation: shake 2s infinite;
+            filter: drop-shadow(0 0 15px #ff0000);
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: rotate(0deg); }
+            25% { transform: rotate(-5deg); }
+            75% { transform: rotate(5deg); }
+        }
+
+        .info-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin: 15px 0;
+        }
+
+        .info-item {
+            background: rgba(255, 0, 0, 0.1);
+            padding: 12px 8px;
+            border: 1px solid #ff0000;
+            border-radius: 5px;
+            text-align: center;
+        }
+
+        .info-item.full {
+            grid-column: 1 / -1;
+        }
+
+        .info-label {
+            color: #ff0000;
+            font-size: clamp(10px, 2.5vw, 12px);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 5px;
+        }
+
+        .info-value {
+            color: #00ff00;
+            font-size: clamp(14px, 4vw, 16px);
+            font-weight: bold;
+            text-shadow: 0 0 5px #00ff00;
+        }
+
+        .warning {
+            background: rgba(255, 0, 0, 0.2);
+            border: 2px dashed #ff0000;
+            padding: 15px;
+            margin: 15px 0;
+            text-align: center;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.02); }
+        }
+
+        .warning-text {
+            color: #ffff00;
+            font-size: clamp(11px, 3vw, 13px);
+            font-weight: bold;
+            text-shadow: 0 0 10px #ffff00;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            line-height: 1.5;
+        }
+
+        .lights {
+            display: flex;
+            justify-content: space-around;
+            margin: 15px 0;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .light {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            animation: lightBlink 1s infinite;
+        }
+
+        .light:nth-child(1) { background: #ff0000; animation-delay: 0s; }
+        .light:nth-child(2) { background: #00ff00; animation-delay: 0.2s; }
+        .light:nth-child(3) { background: #0000ff; animation-delay: 0.4s; }
+        .light:nth-child(4) { background: #ffff00; animation-delay: 0.6s; }
+        .light:nth-child(5) { background: #ff00ff; animation-delay: 0.8s; }
+        .light:nth-child(6) { background: #00ffff; animation-delay: 1s; }
+
+        @keyframes lightBlink {
+            0%, 100% { 
+                box-shadow: 0 0 5px currentColor;
+                opacity: 0.5;
+            }
+            50% { 
+                box-shadow: 0 0 15px currentColor;
+                opacity: 1;
+            }
+        }
+
+        .footer {
+            text-align: center;
+            color: #ff0000;
+            font-size: clamp(11px, 3vw, 13px);
+            margin-top: 20px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            animation: flicker2 0.3s infinite;
+        }
+
+        @keyframes flicker2 {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.8; }
+        }
+
+        @media (max-width: 360px) {
+            .invitation, .security-box {
+                padding: 15px 10px;
+            }
+            
+            .title, .security-title {
+                letter-spacing: 2px;
+            }
+            
+            .subtitle, .security-subtitle {
+                letter-spacing: 1px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="stars" id="stars"></div>
+    <div class="upside-down"></div>
+    <div class="scanline"></div>
+
+    <!-- SECURITY SCREEN -->
+    <div class="security-container" id="securityScreen">
+        <div class="security-box">
+            <div class="lock-icon">🔐</div>
+            <div class="security-title">ACCESO RESTRINGIDO</div>
+            <div class="security-subtitle">Sistema de Seguridad Hawkins Lab</div>
+            
+            <div class="question-box">
+                <div class="question-text" id="questionText">Cargando pregunta...</div>
+                
+                <div class="input-container">
+                    <input 
+                        type="text" 
+                        class="security-input" 
+                        id="answerInput" 
+                        placeholder="Ingresa tu respuesta..."
+                        autocomplete="off"
+                    >
+                </div>
+                
+                <button class="security-button" id="submitBtn">Verificar Acceso</button>
+                
+                <div class="error-message" id="errorMessage">
+                    ⚠️ ACCESO DENEGADO - Respuesta incorrecta
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- INVITATION SCREEN -->
+    <div class="invitation-container" id="invitationScreen">
+        <div class="invitation">
+            <div class="title">STRANGER</div>
+            <div class="title" style="margin-top: -10px;">THINGS</div>
+            <div class="subtitle">TRANSMISIÓN INTERCEPTADA</div>
+
+            <div class="lights">
+                <div class="light"></div>
+                <div class="light"></div>
+                <div class="light"></div>
+                <div class="light"></div>
+                <div class="light"></div>
+                <div class="light"></div>
+            </div>
+
+            <div class="message-box">
+                <div class="message-text">
+                    &gt; MENSAJE DEL OTRO LADO...<br><br>
+                    <span class="highlight">ISAAC</span> está cruzando al mundo real<br>
+                    y cumpliendo <span class="highlight">11 AÑOS</span><br><br>
+                    Necesitamos tu ayuda para celebrar<br>
+                    este evento interdimensional...
+                </div>
+            </div>
+
+            <div class="demogorgon"><img src="demogorgon.png" width="50" heigth="50"></img></div>
+
+            <div class="info-grid">
+                <div class="info-item">
+                    <div class="info-label">📅 Fecha</div>
+                    <div class="info-value">20 Diciembre</div>
+                </div>
+                <div class="info-item">
+                    <div class="info-label">🕐 Hora</div>
+                    <div class="info-value">7:00 PM</div>
+                </div>
+                <div class="info-item full">
+                    <div class="info-label">📍 Ubicación</div>
+                    <div class="info-value">Casa de Isaac</div>
+                </div>
+            </div>
+
+            <div class="warning">
+                <div class="warning-text">
+                    ⚠️ ADVERTENCIA ⚠️<br>
+                    ¡Trae tu linterna!<br>
+                    El Upside Down puede estar cerca...
+                </div>
+            </div>
+
+            <div class="message-box">
+                <div class="message-text" style="text-align: center;">
+                    Prepárate para una aventura épica<br>
+                    con juegos, diversión y misterios<br><br>
+                    <span class="highlight">¡NO FALTES!</span>
+                </div>
+            </div>
+
+            <div class="footer">
+                ...Conexión terminada...
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // BASE DE DATOS DE PREGUNTAS
+        const questions = [
+            {
+                id: "segundo_nombre",
+                question: "¿Cuál es el segundo nombre de Isaac?",
+                answers: ["francisco", "fransisco", "franciso"]
+            },
+            {
+                id: "edad",
+                question: "¿Cuántos años cumple Isaac?",
+                answers: ["11", "once"]
+            },
+            {
+                id: "mes",
+                question: "¿En qué mes es el cumpleaños?",
+                answers: ["diciembre", "12"]
+            },
+            {
+                id: "marjorie",
+                question: "¿Cómo le dice Tia Marjorie a Isaac?",
+                answers: ["principe", "principe de tia", "principe de tía"]
+            },
+            {
+                id: "amanda",
+                question: "¿Cómo le decía Amanda a Júpiter?",
+                answers: ["jope","jopeter"]
+            },
+            {
+                id: "mascota",
+                question: "¿Nombre de alguna mascota de Isaac?",
+                answers: ["jupi","júpiter", "jupiter","satu","saturno"]
+            }
+        ];
+
+        let currentQuestion = null;
+
+        // Normalizar texto para comparación
+        function normalizeText(text) {
+            return text.toLowerCase()
+                       .trim()
+                       .normalize("NFD")
+                       .replace(/[\u0300-\u036f]/g, "")
+                       .replace(/\s+/g, " ");
+        }
+
+        // Obtener pregunta desde query param o elegir aleatoria
+        function getQuestion() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const questionId = urlParams.get('q');
+            
+            if (questionId) {
+                const found = questions.find(q => q.id == questionId);
+                if (found) return found;
+            }
+            
+            // Si no hay param o no se encuentra, elegir aleatoria
+            return questions[Math.floor(Math.random() * questions.length)];
+        }
+
+        // Inicializar pregunta
+        function initQuestion() {
+            currentQuestion = getQuestion();
+            document.getElementById('questionText').textContent = currentQuestion.question;
+        }
+
+        // Verificar respuesta
+        function checkAnswer() {
+            const userAnswer = normalizeText(document.getElementById('answerInput').value);
+            const errorMsg = document.getElementById('errorMessage');
+            
+            if (!userAnswer) {
+                showError();
+                return;
+            }
+            
+            const isCorrect = currentQuestion.answers.some(answer => 
+                normalizeText(answer) === userAnswer
+            );
+            
+            if (isCorrect) {
+                showInvitation();
+            } else {
+                showError();
+            }
+        }
+
+        // Mostrar error
+        function showError() {
+            const errorMsg = document.getElementById('errorMessage');
+            const securityBox = document.querySelector('.security-box');
+            
+            errorMsg.classList.remove('show');
+            setTimeout(() => {
+                errorMsg.classList.add('show');
+                securityBox.style.animation = 'none';
+                securityBox.style.animation = 'shake-error 0.5s';
+                setTimeout(() => {
+                    securityBox.style.animation = 'flicker 0.15s infinite alternate';
+                }, 500);
+            }, 10);
+            
+            // Limpiar input
+            document.getElementById('answerInput').value = '';
+        }
+
+        // Mostrar invitación con efecto
+        function showInvitation() {
+            const securityScreen = document.getElementById('securityScreen');
+            const invitationScreen = document.getElementById('invitationScreen');
+            
+            // Ocultar pantalla de seguridad
+            securityScreen.classList.add('hidden');
+            
+            // Mostrar invitación después de un momento
+            setTimeout(() => {
+                invitationScreen.classList.add('visible');
+                randomGlitch();
+            }, 600);
+        }
+
+        // Crear estrellas en el fondo
+        function createStars() {
+            const starsContainer = document.getElementById('stars');
+            const isMobile = window.innerWidth < 768;
+            const starCount = isMobile ? 50 : 100;
+            
+            for (let i = 0; i < starCount; i++) {
+                const star = document.createElement('div');
+                star.className = 'star';
+                const size = Math.random() * 2 + 1;
+                star.style.width = size + 'px';
+                star.style.height = size + 'px';
+                star.style.left = Math.random() * 100 + '%';
+                star.style.top = Math.random() * 100 + '%';
+                star.style.animationDelay = Math.random() * 3 + 's';
+                starsContainer.appendChild(star);
+            }
+        }
+
+        // Efecto de interferencia aleatoria
+        function randomGlitch() {
+            const invitation = document.querySelector('.invitation');
+            const isMobile = window.innerWidth < 768;
+            const glitchIntensity = isMobile ? 2 : 4;
+            
+            setInterval(() => {
+                if (Math.random() > 0.95) {
+                    invitation.style.transform = `translate(${Math.random() * glitchIntensity - glitchIntensity/2}px, ${Math.random() * glitchIntensity - glitchIntensity/2}px)`;
+                    setTimeout(() => {
+                        invitation.style.transform = 'translate(0, 0)';
+                    }, 50);
+                }
+            }, 100);
+        }
+
+        // Event Listeners
+        document.getElementById('submitBtn').addEventListener('click', checkAnswer);
+        
+        document.getElementById('answerInput').addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                checkAnswer();
+            }
+        });
+
+        // Evitar zoom accidental en doble tap
+        let lastTouchEnd = 0;
+        document.addEventListener('touchend', (e) => {
+            const now = Date.now();
+            if (now - lastTouchEnd <= 300) {
+                e.preventDefault();
+            }
+            lastTouchEnd = now;
+        }, false);
+
+        // Inicializar
+        window.addEventListener('load', () => {
+            createStars();
+            initQuestion();
+        });
+    </script>
+</body>
+</html>
